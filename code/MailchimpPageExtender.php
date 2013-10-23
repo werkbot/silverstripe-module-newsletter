@@ -7,35 +7,40 @@ class MailchimpPageExtender extends DataExtension {
 	);
 	/**/
 	public function NewsletterForm(){
-		//FIELDS
-		if($this->owner->SiteConfig->MailchimpCaptureFirstName){
-			$FirstName = TextField::create("FirstName", "First Name");
+		
+		if ($this->owner->isAjax) {
+			return $this->owner->ProcessMailChimpForm($_POST);
 		}else{
-			$FirstName = HiddenField::create("FirstName", "First Name");	
+			//FIELDS
+			if($this->owner->SiteConfig->MailchimpCaptureFirstName){
+				$FirstName = TextField::create("FirstName", "First Name");
+			}else{
+				$FirstName = HiddenField::create("FirstName", "First Name");	
+			}
+			if($this->owner->SiteConfig->MailchimpCaptureLastName){
+				$LastName = TextField::create("LastName", "Last Name");
+			}else{
+				$LastName = HiddenField::create("LastName", "Last Name");	
+			}
+			$fields = new FieldList(
+				EmailField::create("Email", "Email")->setAttribute('title', "Join Our Newsletter"),
+				$FirstName,
+				$LastName
+			);
+	
+			//ACTIONS
+			$actions = new FieldList (
+				FormAction::create("ProcessMailChimpForm")->setTitle("Signup")
+			);
+			
+			//VALIDATORS
+			$validator = new RequiredFields('Email');
+			
+			//CREATE THE FORM
+			$Form = new Form($this->owner, "NewsletterForm", $fields, $actions, $validator);  
+			
+			return $Form;
 		}
-		if($this->owner->SiteConfig->MailchimpCaptureLastName){
-			$LastName = TextField::create("LastName", "Last Name");
-		}else{
-			$LastName = HiddenField::create("LastName", "Last Name");	
-		}
-		$fields = new FieldList(
-			EmailField::create("Email", "Email"),
-			$FirstName,
-			$LastName
-		);
-
-		//ACTIONS
-		$actions = new FieldList (
-			FormAction::create("ProcessMailChimpForm")->setTitle("Signup")
-		);
-		
-		//VALIDATORS
-	    $validator = new RequiredFields('Email');
-		
-		//CREATE THE FORM
-		$Form = new Form($this->owner, "NewsletterForm", $fields, $actions, $validator);  
-		
-		return $Form;
 	}
 	/**/
 	public function ProcessMailChimpForm($data, Form $form){
@@ -50,19 +55,19 @@ class MailchimpPageExtender extends DataExtension {
 			'send_welcome'      => false
 		));
 		if(isset($result["status"])){
-			if($result["status"]=="error"){
+			//if($result["status"]=="error"){
 				//SHOW ERROR PAGE
 				$data = array(
 					"Content" => $this->owner->SiteConfig->MailchimpErrorText
 				);
-				return $this->owner->customise($data)->renderWith(array('Page'));
-			}
+				return $this->owner->customise($data)->renderWith(array('NewsletterFormSubmission'));
+			//}
 		}else{
 			//SHOW SUCCESS PAGE
 			$data = array(
 				"Content" => $this->owner->SiteConfig->MailchimpSuccessText
 			);
-			return $this->owner->customise($data)->renderWith(array('Page'));
+			return $this->owner->customise($data)->renderWith(array('NewsletterFormSubmission'));
 		}
 	}
 }
