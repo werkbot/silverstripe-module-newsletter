@@ -2,7 +2,7 @@
 	/**/
 	class NewsletterSettings extends DataExtension {
 		/**/
-		public static $db = array( 
+		private static $db = array( 
 			'NewsletterAPI' => "Enum('constantcontact,mailchimp', 'mailchimp')",
 			
 			'MailchimpApikey' => 'Text',
@@ -19,7 +19,7 @@
     		"NewsletterErrorText" => "HTMLText",
 		);
 		/**/
-		public static $defaults = array( 
+		private static $defaults = array( 
     		"MailchimpCaptureFirstName" => "0",
     		"MailchimpCaptureLastName" => "0"
 		);
