@@ -24,13 +24,17 @@ class NewsletterPageExtender extends DataExtension {
 					$LastName = HiddenField::create("LastName", "Last Name");	
 				}
 				$fields = new FieldList(
-					EmailField::create("Email", "Email")->setAttribute('title', "Join Our Newsletter"),
+					EmailField::create("Email", "Email")
+						->setAttribute('title', "Join Our Newsletter")
+						->setAttribute('placeholder', "Enter your email"),
 					$FirstName,
 					$LastName
 				);
 			}else if($this->owner->SiteConfig->NewsletterAPI=='constantcontact'){
 				$fields = new FieldList(
-					EmailField::create("Email", "Email")->setAttribute('title', "Join Our Newsletter")
+					EmailField::create("Email", "Email")
+						->setAttribute('title', "Join Our Newsletter")
+						->setAttribute('placeholder', "Enter your email")
 				);
 			}
 	
