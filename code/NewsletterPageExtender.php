@@ -40,7 +40,7 @@ class NewsletterPageExtender extends DataExtension {
 	
 			//ACTIONS
 			$actions = new FieldList (
-				FormAction::create("ProcessNewsletterForm")->setTitle("Sign-up")
+				FormAction::create("ProcessNewsletterForm")->setTitle("Sign up")
 			);
 			
 			//VALIDATORS
