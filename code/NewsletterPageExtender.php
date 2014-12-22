@@ -14,19 +14,21 @@ class NewsletterPageExtender extends DataExtension {
 			//FIELDS
 			if($this->owner->SiteConfig->NewsletterAPI=='mailchimp'){
 				if($this->owner->SiteConfig->MailchimpCaptureFirstName){
-					$FirstName = TextField::create("FirstName", "First Name");
+					$FirstName = TextField::create("FirstName", "First Name")
+					->setAttribute('placeholder', "Enter your First Name");
 				}else{
 					$FirstName = HiddenField::create("FirstName", "First Name");	
 				}
 				if($this->owner->SiteConfig->MailchimpCaptureLastName){
-					$LastName = TextField::create("LastName", "Last Name");
+					$LastName = TextField::create("LastName", "Last Name")
+					->setAttribute('placeholder', "Enter your Last Name");
 				}else{
 					$LastName = HiddenField::create("LastName", "Last Name");	
 				}
 				$fields = new FieldList(
 					EmailField::create("Email", "Email")
 						->setAttribute('title', "Join Our Newsletter")
-						->setAttribute('placeholder', "Enter your email"),
+						->setAttribute('placeholder', "Enter your Email"),
 					$FirstName,
 					$LastName
 				);
