@@ -2,24 +2,24 @@
 	/**/
 	class NewsletterSettings extends DataExtension {
 		/**/
-		private static $db = array( 
-			'NewsletterAPI' => "Enum('constantcontact,mailchimp', 'mailchimp')",
-			
+		private static $db = array(
+			'NewsletterAPI' => "Enum('constantcontact,mailchimp,none', 'mailchimp')",
+
 			'MailchimpApikey' => 'Text',
 			'MailchimpListName' => 'Text',
     		"MailchimpCaptureFirstName" => "Boolean",
     		"MailchimpCaptureLastName" => "Boolean",
-			
+
 			'ConstantContactApikey' => 'Text',
 			'ConstantContactListName' => 'Text',
 			'ConstantContactUsername' => 'Text',
 			'ConstantContactPassword' => 'Text',
-			
+
     		"NewsletterSuccessText" => "HTMLText",
     		"NewsletterErrorText" => "HTMLText",
 		);
 		/**/
-		private static $defaults = array( 
+		private static $defaults = array(
     		"MailchimpCaptureFirstName" => "0",
     		"MailchimpCaptureLastName" => "0"
 		);
@@ -35,12 +35,13 @@
 					$title = 'Select your newsletter API',
 					$source = array(
 						'constantcontact' => 'Constant Contact',
-						'mailchimp' => 'Mail Chimp'
+						'mailchimp' => 'Mail Chimp',
+						'none' => 'No API'
 					),
 					$value = 'constantcontact'
 				)
 			);
-			
+
 			/* MAILCHIMP */
 			$HeaderMailchimp = DisplayLogicWrapper::create(
 				LiteralField::create('HeaderMailchimp', '<h3>Mailchimp</h3><p>Once you enter your API information and save, you will be able to select which lists you want the entries to be stored.</p>')
@@ -59,7 +60,7 @@
 					->displayIf("NewsletterAPI")->isEqualTo("mailchimp")->end();
 				$fields->addFieldToTab('Root.Newsletter', $MailchimpCaptureLastName);
 				/**/
-				if($this->owner->MailchimpApikey){
+				if($this->owner->MailchimpApikey && $this->owner->NewsletterAPI == 'mailchimp'){
 					require_once(MAILCHIMP_INCLUDES.'/MailChimp.class.php');
 					$MailChimp = new MailChimp($this->owner->MailchimpApikey);
 					$lists = $MailChimp->call('lists/list');
@@ -71,7 +72,7 @@
 						$fields->addFieldToTab('Root.Newsletter', new DropdownField('MailchimpListName', "Select list", $tmp));
 					}
 				}
-			
+
 			/* CONSTANT CONTACT */
 			$HeaderConstantContact = DisplayLogicWrapper::create(
 				LiteralField::create('HeaderConstantContact', '<h3>Constant Contact</h3><p>Once you enter your API information and save, you will be able to select which lists you want the entries to be stored.</p>')
@@ -90,7 +91,7 @@
 					->displayIf("NewsletterAPI")->isEqualTo("constantcontact")->end();
 				$fields->addFieldToTab('Root.Newsletter', $ConstantContactPassword);
 				/**/
-				if($this->owner->ConstantContactApikey){
+				if($this->owner->ConstantContactApikey && $this->owner->NewsletterAPI == 'constantcontact'){
 					require_once(CONSTANTCONTACT_INCLUDES.'/class.cc.php');
 					$ConstantContact = new cc($this->owner->ConstantContactUsername, $this->owner->ConstantContactPassword, $this->owner->ConstantContactApikey);
 					//RETURNS ALL CONSTANT CONTACT LISTS (MINUS THE GENERIC LISTS)
@@ -113,7 +114,7 @@
 			$htmlField->addExtraClass('stacked');
 			$htmlField->setRows(5);
 			$fields->addFieldToTab('Root.Newsletter', $htmlField);
-			
+
         }
 	}
 ?>
