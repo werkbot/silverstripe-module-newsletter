@@ -103,15 +103,15 @@ class NewsletterPageExtender extends DataExtension {
 		if($status){
 			//SHOW ERROR PAGE
 			$data = array(
-				"Content" => $this->owner->SiteConfig->NewsletterErrorText
+				"NewsletterMessage" => $this->owner->SiteConfig->NewsletterErrorText
 			);
-			return $this->owner->customise($data)->renderWith(array('Page', 'NewsletterFormSubmission'));
+			return $this->owner->customise($data)->renderWith(array($this->owner->ClassName, 'Page', 'NewsletterFormSubmission'));
 		}else{
 			//SHOW SUCCESS PAGE
 			$data = array(
-				"Content" => $this->owner->SiteConfig->NewsletterSuccessText
+				"NewsletterMessage" => $this->owner->SiteConfig->NewsletterSuccessText
 			);
-			return $this->owner->customise($data)->renderWith(array('Page', 'NewsletterFormSubmission'));
+			return $this->owner->customise($data)->renderWith(array($this->owner->ClassName, 'Page', 'NewsletterFormSubmission'));
 		}
 	}
 }
