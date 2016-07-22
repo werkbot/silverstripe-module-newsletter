@@ -17,6 +17,8 @@
 
     		"NewsletterSuccessText" => "HTMLText",
     		"NewsletterErrorText" => "HTMLText",
+
+			'NewsletterFormButtonText' => "Text"
 		);
 		/**/
 		private static $defaults = array(
@@ -41,6 +43,9 @@
 					$value = 'constantcontact'
 				)
 			);
+
+			//BUTTON TEXT
+			$fields->addFieldToTab("Root.Newsletter", TextField::create("NewsletterFormButtonText", "Button Text"));
 
 			/* MAILCHIMP */
 			$HeaderMailchimp = DisplayLogicWrapper::create(

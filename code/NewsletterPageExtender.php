@@ -8,6 +8,9 @@ class NewsletterPageExtender extends DataExtension {
 	/**/
 	public function NewsletterForm(){
 
+		//
+		$config = SiteConfig::current_site_config();
+
 		if ($this->owner->isAjax) {
 			return $this->owner->ProcessNewsletterForm($_POST);
 		}else{
@@ -41,8 +44,9 @@ class NewsletterPageExtender extends DataExtension {
 			}
 
 			//ACTIONS
+			$actionText = (($config->NewsletterFormButtonText) ? $config->NewsletterFormButtonText : "Sign Up");
 			$actions = new FieldList (
-				FormAction::create("ProcessNewsletterForm")->setTitle("Sign up")
+				FormAction::create("ProcessNewsletterForm")->setTitle($actionText)
 			);
 
 			//VALIDATORS
