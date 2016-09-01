@@ -29,7 +29,7 @@ class NewsletterSubmission extends DataObject {
   /**/
   public function getCMSFields() {
     //
-    $fields = array(
+    $fields = new FieldList(
       ReadOnlyField::create("Created", "Created Date"),
       ReadOnlyField::create("Email", "Email"),
       ReadOnlyField::create("FirstName", "First Name"),
