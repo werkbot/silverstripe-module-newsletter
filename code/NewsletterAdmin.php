@@ -7,7 +7,7 @@ class NewsletterAdmin extends ModelAdmin {
   );
   /**/
   private static $url_segment = 'newsletter-submissions';
-  private static $menu_title = 'Newsletter Submissions';
+  private static $menu_title = 'Newsletter';
   private static $menu_icon = '/newsletter-module/images/newsletter-icon.png';
   /**/
   public $showImportForm = array();
