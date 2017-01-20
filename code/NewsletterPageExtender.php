@@ -3,7 +3,8 @@
 class NewsletterPageExtender extends DataExtension {
 	/**/
 	private static $allowed_actions = array (
-		"NewsletterForm"
+		"NewsletterForm",
+    "InsertToNewsletter"
 	);
 	/**/
 	public function NewsletterForm(){
@@ -120,4 +121,55 @@ class NewsletterPageExtender extends DataExtension {
 			return $this->owner->customise($data)->renderWith(array($this->owner->ClassName, 'Page', 'NewsletterFormSubmission'));
 		}
 	}
+  /*
+    TODO: This will replace the code above in ProcessNewsletterForm
+    for inserting email addresses.
+  */
+  public function InsertToNewsletter($Email, $FirstName="", $LastName=""){
+    if($this->owner->SiteConfig->NewsletterAPI=='mailchimp'){
+      $api = new MailChimp($this->owner->SiteConfig->MailchimpApikey);
+      $result = $api->call('lists/subscribe', array(
+        'id'				=> $this->owner->SiteConfig->MailchimpListName,
+        'email'             => array('email' => $Email),
+        'merge_vars'        => array('FNAME' => $FirstName, 'LNAME' => $LastName),
+        'double_optin'      => false,
+        'update_existing'   => true,
+        'replace_interests' => false,
+        'send_welcome'      => false
+      ));
+      $status = isset($result["status"]);
+    }else if($this->owner->SiteConfig->NewsletterAPI=='constantcontact'){
+      $api = new cc($this->owner->SiteConfig->ConstantContactUsername, $this->owner->SiteConfig->ConstantContactPassword, $this->owner->SiteConfig->ConstantContactApikey);
+      $contact = $api->query_contacts($data["Email"]);
+      if($contact){
+        //UPDATE CONTACT
+        $this->cc_status = $api->update_contact($contact['id'], $Email, $this->owner->SiteConfig->ConstantContactListName);
+        if($this->cc_status){
+          $status = false;
+        }else{
+          $status = true;
+        }
+      }else{
+        //ADD CONTACT
+        $extra_fields = array();
+        $this->cc_status = $api->create_contact($Email, $this->owner->SiteConfig->ConstantContactListName, $extra_fields);
+        if($this->cc_status){
+          $status = false;
+        }else{
+          $status = true;
+        }
+      }
+    } else if ($this->owner->SiteConfig->NewsletterAPI=='none') {
+      $status = false;
+    }
+
+    //SAVE SUBMISSION NO MATTER WHAT API (or if none)
+    $submission = new NewsletterSubmission();
+    $submission->Email = $Email;
+    $submission->FirstName = $FirstName;
+    $submission->LastName = $LastName;
+    $submission->write();
+
+    return $status;
+  }
 }
