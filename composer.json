@@ -1,0 +1,10 @@
+{
+	"name": "werkbot/newsletter-module",
+	"description": "Newsletter module (Mailchimp, Constant Contact or none)",
+  "type": "silverstripe-module",
+  "require": {
+   "silverstripe/cms": "~3.1",
+   "silverstripe/framework": "~3.1",
+   "drewm/mailchimp-api": "^2.4"
+ }
+}
