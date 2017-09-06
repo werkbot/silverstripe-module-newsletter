@@ -1,5 +1,7 @@
 <?php
 /**/
+use \DrewM\MailChimp\MailChimp;
+/**/
 class NewsletterPageExtender extends DataExtension {
 	/**/
 	private static $allowed_actions = array (
@@ -62,17 +64,19 @@ class NewsletterPageExtender extends DataExtension {
 	/**/
 	public function ProcessNewsletterForm($data, Form $form){
 		if($this->owner->SiteConfig->NewsletterAPI=='mailchimp'){
-			$api = new MailChimp($this->owner->SiteConfig->MailchimpApikey);
-			$result = $api->call('lists/subscribe', array(
-				'id'				=> $this->owner->SiteConfig->MailchimpListName,
-				'email'             => array('email' => $data["Email"]),
-				'merge_vars'        => array('FNAME' => $data["FirstName"], 'LNAME' => $data["LastName"]),
-				'double_optin'      => false,
-				'update_existing'   => true,
-				'replace_interests' => false,
-				'send_welcome'      => false
-			));
-			$status = isset($result["status"]);
+      require_once(MAILCHIMP_INCLUDES.'/MailChimp.php');
+			$MailChimp = new MailChimp($this->owner->SiteConfig->MailchimpApikey);
+
+      $result = $MailChimp->post("lists/".$this->owner->SiteConfig->MailchimpListName."/members", [
+				'email_address' => $data["Email"],
+        'merge_fields' => ['FNAME'=> $data["FirstName"], 'LNAME'=> $data["LastName"]],
+				'status'        => 'subscribed',
+			]);
+      if ($MailChimp->success()) {
+        $status = true;
+      }else{
+        $status = false;
+      }
 		}else if($this->owner->SiteConfig->NewsletterAPI=='constantcontact'){
 			$api = new cc($this->owner->SiteConfig->ConstantContactUsername, $this->owner->SiteConfig->ConstantContactPassword, $this->owner->SiteConfig->ConstantContactApikey);
 			$contact = $api->query_contacts($data["Email"]);
@@ -127,17 +131,18 @@ class NewsletterPageExtender extends DataExtension {
   */
   public function InsertToNewsletter($Email, $FirstName="", $LastName=""){
     if($this->owner->SiteConfig->NewsletterAPI=='mailchimp'){
-      $api = new MailChimp($this->owner->SiteConfig->MailchimpApikey);
-      $result = $api->call('lists/subscribe', array(
-        'id'				=> $this->owner->SiteConfig->MailchimpListName,
-        'email'             => array('email' => $Email),
-        'merge_vars'        => array('FNAME' => $FirstName, 'LNAME' => $LastName),
-        'double_optin'      => false,
-        'update_existing'   => true,
-        'replace_interests' => false,
-        'send_welcome'      => false
-      ));
-      $status = isset($result["status"]);
+      require_once(MAILCHIMP_INCLUDES.'/MailChimp.php');
+			$MailChimp = new MailChimp($this->owner->SiteConfig->MailchimpApikey);
+      $result = $MailChimp->post("lists/".$this->owner->SiteConfig->MailchimpListName."/members", [
+				'email_address' => $Email,
+        'merge_fields' => ['FNAME'=> $FirstName, 'LNAME'=> $LastName],
+				'status'        => 'subscribed',
+			]);
+      if ($MailChimp->success()) {
+        $status = true;
+      }else{
+        $status = false;
+      }
     }else if($this->owner->SiteConfig->NewsletterAPI=='constantcontact'){
       $api = new cc($this->owner->SiteConfig->ConstantContactUsername, $this->owner->SiteConfig->ConstantContactPassword, $this->owner->SiteConfig->ConstantContactApikey);
       $contact = $api->query_contacts($data["Email"]);

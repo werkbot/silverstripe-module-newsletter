@@ -1,4 +1,6 @@
 <?php
+  /**/
+  use \DrewM\MailChimp\MailChimp;
 	/**/
 	class NewsletterSettings extends DataExtension {
 		/**/
@@ -66,12 +68,12 @@
 				$fields->addFieldToTab('Root.Newsletter', $MailchimpCaptureLastName);
 				/**/
 				if($this->owner->MailchimpApikey && $this->owner->NewsletterAPI == 'mailchimp'){
-					require_once(MAILCHIMP_INCLUDES.'/MailChimp.class.php');
+					require_once(MAILCHIMP_INCLUDES.'/MailChimp.php');
 					$MailChimp = new MailChimp($this->owner->MailchimpApikey);
-					$lists = $MailChimp->call('lists/list');
+					$lists = $MailChimp->get('lists');
 					if($lists){
 						$tmp = array();
-						foreach($lists["data"] as $list){
+						foreach($lists["lists"] as $list){
 							$tmp[$list['id']] = $list['name'];
 						}
 						$fields->addFieldToTab('Root.Newsletter', new DropdownField('MailchimpListName', "Select list", $tmp));
