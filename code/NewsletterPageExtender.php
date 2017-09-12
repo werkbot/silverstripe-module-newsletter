@@ -73,7 +73,7 @@ class NewsletterPageExtender extends DataExtension {
       $LastName = $data["LastName"];
     }
 
-    $status = $this->InsertToNewsletter($data["Email"], $FirstName, $LastName);
+    $status = $this->owner->InsertToNewsletter($data["Email"], $FirstName, $LastName);
 
 		if($status){
       //SHOW SUCCESS PAGE
@@ -99,12 +99,19 @@ class NewsletterPageExtender extends DataExtension {
       $result = $MailChimp->post("lists/".$this->owner->SiteConfig->MailchimpListName."/members", [
 				'email_address' => $Email,
         'merge_fields' => ['FNAME'=> $FirstName, 'LNAME'=> $LastName],
-				'status'        => 'subscribed',
+				'status'        => 'subscribed'
 			]);
+			//echo "<pre>";print_r($result);die();
       if ($MailChimp->success()) {
         $status = true;
       }else{
-        $status = false;
+        $error = explode(":", $MailChimp->getLastError());
+        if($error[0]=="400"){
+          //IF THE EMAIL EXISTS
+          $status = true;
+        }else{
+          $status = false;
+        }
       }
     }else if($this->owner->SiteConfig->NewsletterAPI=='constantcontact'){
       $api = new cc($this->owner->SiteConfig->ConstantContactUsername, $this->owner->SiteConfig->ConstantContactPassword, $this->owner->SiteConfig->ConstantContactApikey);
