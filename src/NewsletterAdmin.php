@@ -1,20 +1,19 @@
 <?php
 /**/
+use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\Forms\GridField\GridFieldFilterHeader;
+/**/
 class NewsletterAdmin extends ModelAdmin {
   /**/
-  private static $managed_models = array(
-    "NewsletterSubmission"
-  );
+  private static $managed_models = [
+    "NewsletterSubmission",
+  ];
   /**/
   private static $url_segment = 'newsletter-submissions';
   private static $menu_title = 'Newsletter';
   private static $menu_icon = '/newsletter-module/images/newsletter-icon.png';
   /**/
   public $showImportForm = array();
-  /**/
-  public function init(){
-    parent::init();
-  }
   /**/
   public function getEditForm($id=null, $fields=null) {
     $form = parent::getEditForm($id, $fields);
