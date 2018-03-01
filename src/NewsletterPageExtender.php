@@ -1,7 +1,9 @@
 <?php
 /**/
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Forms\EmailField;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\ORM\DataExtension;
@@ -30,15 +32,19 @@ class NewsletterPageExtender extends DataExtension {
 
 			//ACTIONS
 			$actionText = (($config->NewsletterFormButtonText) ? $config->NewsletterFormButtonText : "Sign Up");
-			$actions = new FieldList (
-				FormAction::create("ProcessNewsletterForm")->setTitle($actionText)
-			);
+      $actionbutton = FormAction::create('ProcessNewsletterForm', $actionText)
+        ->setUseButtonTag(true);
+  		$actions = new FieldList(
+  			$actionbutton
+  		);
 
 			//VALIDATORS
 			$validator = new RequiredFields('Email');
 
 			//CREATE THE FORM
 			$Form = new Form($this->owner, "NewsletterForm", $fields, $actions, $validator);
+		    $data = array();
+      $Form->customise($data)->setTemplate('NewsletterForm');
 
 			return $Form;
 		}
