@@ -4,6 +4,7 @@ use SilverStripe\Forms\EmailField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\RequiredFields;
+use SilverStripe\ORM\DataExtension;
 /**/
 class NewsletterPageExtender extends DataExtension {
 	/**/

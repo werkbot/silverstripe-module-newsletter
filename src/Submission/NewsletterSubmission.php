@@ -2,11 +2,12 @@
 /**/
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\ReadOnlyField;
+use SilverStripe\ORM\DataObject;
 /**/
 class NewsletterSubmission extends DataObject {
   /**/
-  static $singular_name = 'Newsletter Submission';
-  static $plural_name = 'Newsletter Submissions';
+  private static $singular_name = 'Newsletter Submission';
+  private static $plural_name = 'Newsletter Submissions';
   /**/
   private static $default_sort = "Created DESC";
   /**/
@@ -14,12 +15,12 @@ class NewsletterSubmission extends DataObject {
     "Email" => 'Text',
   ];
   /**/
-  public static $summary_fields = [
+  private static $summary_fields = [
     "Created" => "Created Date",
     "Email" => "Email Address"
   ];
   /**/
-  public static $searchable_fields = [
+  private static $searchable_fields = [
     "Created",
     "Email"
   ];

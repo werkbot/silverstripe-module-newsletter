@@ -1,4 +1,7 @@
 <?php
+  /**/
+  use SilverStripe\SiteConfig\SiteConfig;
+  /**/
 	SiteConfig::add_extension('NewsletterSettings');
-	Page_Controller::add_extension('NewsletterPageExtender');
+	PageController::add_extension('NewsletterPageExtender');
 ?>
