@@ -1,7 +1,7 @@
 {
 	"name": "werkbot/newsletter-module",
 	"description": "Newsletter module",
-  "type": "silverstripe-module",
+	"type": "silverstripe-vendormodule",
   "require": {
     "silverstripe/cms": "~4.0",
     "silverstripe/framework": "~4.0"
