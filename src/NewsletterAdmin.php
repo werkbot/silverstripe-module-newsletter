@@ -2,6 +2,7 @@
 /**/
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Forms\GridField\GridFieldFilterHeader;
+use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 /**/
 class NewsletterAdmin extends ModelAdmin {
   /**/
@@ -20,8 +21,7 @@ class NewsletterAdmin extends ModelAdmin {
 
     $gridField = $form->Fields()->fieldByName($this->sanitiseClassName($this->modelClass));
 		$gridField->getConfig()->addComponent(new GridFieldFilterHeader());
-    $gridField->getConfig()->removeComponent($gridField->getConfig()->getComponentByType('GridFieldAddNewButton'));
-
+    $gridField->getConfig()->removeComponentsByType(GridFieldAddNewButton::class);
     return $form;
   }
 }
