@@ -72,6 +72,7 @@ class NewsletterPageExtender extends DataExtension {
 	}
   /**/
   public function InsertToNewsletter($Email){
+    $status = true;
 
     //SAVE SUBMISSION NO MATTER WHAT API (or if none)
     $submission = new NewsletterSubmission();
