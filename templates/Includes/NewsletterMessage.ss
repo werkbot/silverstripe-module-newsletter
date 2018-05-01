@@ -2,7 +2,7 @@
  <div class="newsletter-message $MessageType">
    <div class="container">
      <div class="space">
-       $NewsletterMessage
+       $NewsletterMessage.RAW
      </div>
    </div>
  </div>
