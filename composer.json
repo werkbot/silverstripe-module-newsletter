@@ -5,5 +5,10 @@
   "require": {
     "silverstripe/cms": "~4.0",
     "silverstripe/framework": "~4.0"
+  },
+  "extra": {
+    "expose": [
+        "sass"
+    ]
   }
 }

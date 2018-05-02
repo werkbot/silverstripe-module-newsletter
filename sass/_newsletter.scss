@@ -1,0 +1,34 @@
+.newsletter{
+  .form{
+    label{
+     height: 1px;
+     text-indent: -9999px;
+     position: absolute;
+   }
+   input{
+     &.text{
+       border: none;
+       width: 90%;
+       height: 100%;
+       padding: 0 5%;
+       margin: 0;
+       border-radius: 0;
+     }
+     &::placeholder{
+       color: #999999;
+     }
+   }
+   button{
+     &.action{
+       padding: 16px 5%;
+       margin: 0;
+       width: 90%;
+       border-radius: 0;
+       margin: 5px 0px 5px 0px;
+     }
+   }
+ }
+}
+.newsletter-message{
+  text-align: center;
+}
