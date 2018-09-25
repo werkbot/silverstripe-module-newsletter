@@ -54,20 +54,25 @@ class NewsletterPageExtender extends DataExtension {
 
     $status = $this->owner->InsertToNewsletter($data["Email"]);
 
+    $resultdata = [
+      "NewsletterMessage" => "",
+      "MessageType" => "",
+    ];
+
+    $this->owner->extend("updateProcessNewsletterForm", $data);
+
 		if($status){
       //SHOW SUCCESS PAGE
-      $data = array(
-        "NewsletterMessage" => $this->owner->SiteConfig->NewsletterSuccessText,
-        "MessageType" => "good"
-      );
-      return $this->owner->customise($data)->renderWith(array($this->owner->ClassName, 'Page', 'NewsletterFormSubmission'));
+      $resultdata["NewsletterMessage"] = $this->owner->SiteConfig->NewsletterSuccessText;
+      $resultdata["MessageType"] = "good";
+
+      return $this->owner->customise($resultdata)->renderWith(array($this->owner->ClassName, 'Page', 'NewsletterFormSubmission'));
 		}else{
 			//SHOW ERROR PAGE
-			$data = array(
-				"NewsletterMessage" => $this->owner->SiteConfig->NewsletterErrorText,
-				"MessageType" => "bad"
-			);
-			return $this->owner->customise($data)->renderWith(array($this->owner->ClassName, 'Page', 'NewsletterFormSubmission'));
+      $resultdata["NewsletterMessage"] = $this->owner->SiteConfig->NewsletterErrorText;
+      $resultdata["MessageType"] = "bad";
+
+			return $this->owner->customise($resultdata)->renderWith(array($this->owner->ClassName, 'Page', 'NewsletterFormSubmission'));
 		}
 	}
   /**/
