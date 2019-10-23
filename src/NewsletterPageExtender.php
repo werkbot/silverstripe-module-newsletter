@@ -1,5 +1,6 @@
 <?php
 /**/
+use SilverStripe\Core\Environment;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Forms\EmailField;
 use SilverStripe\Forms\FieldList;
@@ -16,8 +17,6 @@ class NewsletterPageExtender extends DataExtension {
 	];
 	/**/
 	public function NewsletterForm(){
-
-		//
 		$config = SiteConfig::current_site_config();
 
 		if ($this->owner->isAjax) {
@@ -78,6 +77,17 @@ class NewsletterPageExtender extends DataExtension {
   /**/
   public function InsertToNewsletter($Email){
     $status = true;
+  	$config = SiteConfig::current_site_config();
+
+    if($config->NewsletterAPI=="campaignmonitor" && $config->CampaignMonitorListID){
+      $auth = array('api_key' => Environment::getEnv('CAMPAIGNMONITOR_API_KEY'));
+      $wrap = new CS_REST_Subscribers($config->CampaignMonitorListID, $auth);
+      $result = $wrap->add(array(
+        'EmailAddress' => $Email,
+        'ConsentToTrack' => 'yes',
+        'Resubscribe' => true
+      ));
+    }
 
     //SAVE SUBMISSION NO MATTER WHAT API (or if none)
     $submission = new NewsletterSubmission();
