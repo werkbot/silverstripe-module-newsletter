@@ -1,0 +1,6 @@
+en:
+  NewsletterForm:
+    LABEL: 'Enter Email'
+    TITLE: 'Enter your email'
+    PLACEHOLDER: 'Enter your email'
+    ACTION: 'Sign Up'
