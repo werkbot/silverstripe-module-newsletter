@@ -24,14 +24,13 @@ class NewsletterPageExtender extends DataExtension {
 		}else{
 			//FIELDS
 			$fields = new FieldList(
-				EmailField::create("Email", "Email")
-					->setAttribute('title', "Join Our Newsletter")
-					->setAttribute('placeholder', "Enter your email")
+				EmailField::create("Email", _t("NewsletterForm.LABEL", "Enter Email"))
+					->setAttribute('title', _t("NewsletterForm.TITLE", "Enter Your Email"))
+					->setAttribute('placeholder', _t("NewsletterForm.PLACEHOLDER", "Enter Your Email"))
 			);
 
 			//ACTIONS
-			$actionText = (($config->NewsletterFormButtonText) ? $config->NewsletterFormButtonText : "Sign Up");
-      $actionbutton = FormAction::create('ProcessNewsletterForm', $actionText)
+      $actionbutton = FormAction::create('ProcessNewsletterForm', _t("NewsletterForm.ACTION", "Sign Up"))
         ->setUseButtonTag(true);
   		$actions = new FieldList(
   			$actionbutton

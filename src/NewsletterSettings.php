@@ -14,7 +14,6 @@ class NewsletterSettings extends DataExtension {
 		'NewsletterAPI' => "Enum('campaignmonitor,mailchimp,none', 'none')",
 		"NewsletterSuccessText" => "HTMLText",
 		"NewsletterErrorText" => "HTMLText",
-		'NewsletterFormButtonText' => "Text",
 
     'CampaignMonitorListID' => "Text",
 	];
@@ -50,9 +49,6 @@ class NewsletterSettings extends DataExtension {
         ->displayIf("NewsletterAPI")->isEqualTo("campaignmonitor")->end();
   		$fields->addFieldToTab('Root.Newsletter', $CampaignMonitorListID);
     }
-
-		//BUTTON TEXT
-		$fields->addFieldToTab("Root.Newsletter", TextField::create("NewsletterFormButtonText", "Button Text"));
 
 		/**/
 		$htmlField = new HTMLEditorField('NewsletterSuccessText', 'Success/Thankyou Text');
