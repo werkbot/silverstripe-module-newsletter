@@ -57,7 +57,9 @@ class NewsletterPageExtender extends DataExtension {
 
 			//CREATE THE FORM
 			$Form = new Form($this->owner, "NewsletterForm", $fields, $actions, $validator);
-
+			$data = array();
+			$Form->customise($data)->setTemplate('NewsletterForm');
+			
 			return $Form;
 		}
 	}
