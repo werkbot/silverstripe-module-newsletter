@@ -8,6 +8,9 @@ use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\ORM\DataExtension;
+use Ctct\Components\Contacts\Contact;
+use Ctct\ConstantContact;
+use Ctct\Exceptions\CtctException;
 /**/
 class NewsletterPageExtender extends DataExtension {
 	/**/
@@ -86,6 +89,74 @@ class NewsletterPageExtender extends DataExtension {
         'ConsentToTrack' => 'yes',
         'Resubscribe' => true
       ));
+    }
+
+    // Insert Into Constant Contact
+    if($config->NewsletterAPI=="constantcontact"
+      && Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN')
+      && Environment::getEnv('CONSTANTCONTACT_API_KEY')
+      && Environment::getEnv('CONSTANTCONTACT_LIST'))
+    {
+   
+      $cc = new ConstantContact(Environment::getEnv('CONSTANTCONTACT_API_KEY'));
+
+      // attempt to fetch lists in the account, catching any exceptions and printing the errors to screen
+      try {
+          $lists = $cc->listService->getLists(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'));
+      } catch (CtctException $ex) {
+          foreach ($ex->getErrors() as $error) {
+              print_r($error);
+          }
+          if (!isset($lists)) {
+              $lists = null;
+          }
+      }
+
+      // check if the form was submitted
+      if (isset($Email) && strlen($Email) > 1) {
+          $action = "Getting Contact By Email Address";
+          try {
+              // check to see if a contact with the email address already exists in the account
+              $response = $cc->contactService->getContacts(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), array("email" => $Email));
+
+              // create a new contact if one does not exist
+              if (empty($response->results)) {
+                  $action = "Creating Contact";
+
+                  $contact = new Contact();
+                  $contact->addEmail($Email);
+                  $contact->addList(Environment::getEnv('CONSTANTCONTACT_LIST'));
+                  // $contact->first_name = $_POST['first_name'];
+                  // $contact->last_name = $_POST['last_name'];
+
+                  $returnContact = $cc->contactService->addContact(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), $contact, true);
+
+              } else { // update the existing contact if address already existed
+                  $action = "Updating Contact";
+
+                  $contact = $response->results[0];
+                  if ($contact instanceof Contact) {
+                      $contact->addList(Environment::getEnv('CONSTANTCONTACT_LIST'));
+                      // $contact->first_name = $_POST['first_name'];
+                      // $contact->last_name = $_POST['last_name'];
+
+                      $returnContact = $cc->contactService->updateContact(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), $contact, true);
+                  } else {
+                      $e = new CtctException();
+                      $e->setErrors(array("type", "Contact type not returned"));
+                      throw $e;
+                  }
+              }
+
+          } catch (CtctException $ex) { // catch any exceptions thrown during the process and print the errors to screen
+              echo '<span class="label label-important">Error ' . $action . '</span>';
+              echo '<div class="container alert-error"><pre class="failure-pre">';
+              print_r($ex->getErrors());
+              echo '</pre></div>';
+              die();
+          }
+      }
+
     }
 
     //SAVE SUBMISSION NO MATTER WHAT API (or if none)

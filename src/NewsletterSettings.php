@@ -11,7 +11,7 @@ use SilverStripe\ORM\DataExtension;
 class NewsletterSettings extends DataExtension {
 	/**/
 	private static $db = [
-		'NewsletterAPI' => "Enum('campaignmonitor,mailchimp,none', 'none')",
+		'NewsletterAPI' => "Enum('campaignmonitor,mailchimp,constantcontact,none', 'none')",
 		"NewsletterSuccessText" => "HTMLText",
 		"NewsletterErrorText" => "HTMLText",
 
@@ -29,6 +29,7 @@ class NewsletterSettings extends DataExtension {
 				'Select your newsletter API',
 				array(
 					'campaignmonitor' => 'Campaign Monitor',
+					'constantcontact' => 'Constant Contact',
 					'none' => 'No API'
 				),
 				'none'

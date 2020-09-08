@@ -5,7 +5,8 @@
   "require": {
     "silverstripe/cms": "~4.0",
     "silverstripe/framework": "~4.0",
-    "campaignmonitor/createsend-php": "*"
+    "campaignmonitor/createsend-php": "*",
+    "constantcontact/constantcontact": "dev-development"
   },
   "extra": {
     "expose": [
