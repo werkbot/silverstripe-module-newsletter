@@ -95,8 +95,7 @@ class NewsletterPageExtender extends DataExtension {
     if($config->NewsletterAPI=="constantcontact"
       && Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN')
       && Environment::getEnv('CONSTANTCONTACT_API_KEY')
-      && Environment::getEnv('CONSTANTCONTACT_LIST'))
-    {
+    ){
    
       $cc = new ConstantContact(Environment::getEnv('CONSTANTCONTACT_API_KEY'));
 
@@ -125,7 +124,7 @@ class NewsletterPageExtender extends DataExtension {
 
                   $contact = new Contact();
                   $contact->addEmail($Email);
-                  $contact->addList(Environment::getEnv('CONSTANTCONTACT_LIST'));
+                  $contact->addList($config->ConstantContactListID);
                   // $contact->first_name = $_POST['first_name'];
                   // $contact->last_name = $_POST['last_name'];
 
@@ -136,7 +135,7 @@ class NewsletterPageExtender extends DataExtension {
 
                   $contact = $response->results[0];
                   if ($contact instanceof Contact) {
-                      $contact->addList(Environment::getEnv('CONSTANTCONTACT_LIST'));
+                      $contact->addList($config->ConstantContactListID);
                       // $contact->first_name = $_POST['first_name'];
                       // $contact->last_name = $_POST['last_name'];
 
