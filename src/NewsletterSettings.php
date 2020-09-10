@@ -7,15 +7,17 @@ use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataExtension;
+use Ctct\ConstantContact;
 /**/
 class NewsletterSettings extends DataExtension {
 	/**/
 	private static $db = [
-		'NewsletterAPI' => "Enum('campaignmonitor,mailchimp,none', 'none')",
+		'NewsletterAPI' => "Enum('campaignmonitor,mailchimp,constantcontact,none', 'none')",
 		"NewsletterSuccessText" => "HTMLText",
 		"NewsletterErrorText" => "HTMLText",
 
     'CampaignMonitorListID' => "Text",
+    'ConstantContactListID' => "Text"
 	];
 	/**/
   public function updateCMSFields(FieldList $fields) {
@@ -29,6 +31,7 @@ class NewsletterSettings extends DataExtension {
 				'Select your newsletter API',
 				array(
 					'campaignmonitor' => 'Campaign Monitor',
+					'constantcontact' => 'Constant Contact',
 					'none' => 'No API'
 				),
 				'none'
@@ -41,13 +44,26 @@ class NewsletterSettings extends DataExtension {
       $wrap = new CS_REST_Clients(Environment::getEnv('CAMPAIGNMONITOR_CLIENT_ID'), $auth);
       $result = $wrap->get_lists();
       //echo "<pre>";print_r($result);die();
-			$listarray = array();
+	  $listarray = array();
       foreach($result->response as $list){
         $listarray[$list->ListID] = $list->Name;
       }
       $CampaignMonitorListID = DropdownField::create("CampaignMonitorListID", "Select a list", $listarray)
         ->displayIf("NewsletterAPI")->isEqualTo("campaignmonitor")->end();
   		$fields->addFieldToTab('Root.Newsletter', $CampaignMonitorListID);
+    }
+
+    // Constant Contact
+    if(Environment::getEnv('CONSTANTCONTACT_API_KEY') && Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN')){
+      $cc = new ConstantContact(Environment::getEnv('CONSTANTCONTACT_API_KEY'));
+      $lists = $cc->getLists(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'));
+	  $listarray = array();
+      foreach($lists as $list){
+        $listarray[$list->id] = $list->name;
+      }
+      $ConstantContactListID = DropdownField::create("ConstantContactListID", "Select a list", $listarray)
+        ->displayIf("NewsletterAPI")->isEqualTo("constantcontact")->end();
+  		$fields->addFieldToTab('Root.Newsletter', $ConstantContactListID);
     }
 
 		/**/
