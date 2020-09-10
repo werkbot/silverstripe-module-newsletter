@@ -101,7 +101,7 @@ class NewsletterPageExtender extends DataExtension {
 
       // attempt to fetch lists in the account, catching any exceptions and printing the errors to screen
       try {
-          $lists = $cc->listService->getLists(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'));
+          $lists = $cc->getLists(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'));
       } catch (CtctException $ex) {
           foreach ($ex->getErrors() as $error) {
               print_r($error);
@@ -116,7 +116,7 @@ class NewsletterPageExtender extends DataExtension {
           $action = "Getting Contact By Email Address";
           try {
               // check to see if a contact with the email address already exists in the account
-              $response = $cc->contactService->getContacts(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), array("email" => $Email));
+              $response = $cc->getContacts(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), array("email" => $Email));
 
               // create a new contact if one does not exist
               if (empty($response->results)) {
@@ -128,7 +128,7 @@ class NewsletterPageExtender extends DataExtension {
                   // $contact->first_name = $_POST['first_name'];
                   // $contact->last_name = $_POST['last_name'];
 
-                  $returnContact = $cc->contactService->addContact(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), $contact, true);
+                  $returnContact = $cc->addContact(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), $contact, true);
 
               } else { // update the existing contact if address already existed
                   $action = "Updating Contact";
@@ -139,7 +139,7 @@ class NewsletterPageExtender extends DataExtension {
                       // $contact->first_name = $_POST['first_name'];
                       // $contact->last_name = $_POST['last_name'];
 
-                      $returnContact = $cc->contactService->updateContact(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), $contact, true);
+                      $returnContact = $cc->updateContact(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), $contact, true);
                   } else {
                       $e = new CtctException();
                       $e->setErrors(array("type", "Contact type not returned"));

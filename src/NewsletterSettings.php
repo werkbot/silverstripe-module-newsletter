@@ -56,7 +56,7 @@ class NewsletterSettings extends DataExtension {
     // Constant Contact
     if(Environment::getEnv('CONSTANTCONTACT_API_KEY') && Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN')){
       $cc = new ConstantContact(Environment::getEnv('CONSTANTCONTACT_API_KEY'));
-      $lists = $cc->listService->getLists(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'));
+      $lists = $cc->getLists(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'));
 	  $listarray = array();
       foreach($lists as $list){
         $listarray[$list->id] = $list->name;
