@@ -34,7 +34,8 @@ class NewsletterPageExtender extends DataExtension {
 
 			//ACTIONS
       $actionbutton = FormAction::create('ProcessNewsletterForm', _t("NewsletterForm.ACTION", "Sign Up"))
-        ->setUseButtonTag(true);
+        ->setUseButtonTag(true)
+        ->setAttribute("aria-label", _t("NewsletterForm.ACTION", "Sign Up"));
   		$actions = new FieldList(
   			$actionbutton
   		);
@@ -96,7 +97,7 @@ class NewsletterPageExtender extends DataExtension {
       && Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN')
       && Environment::getEnv('CONSTANTCONTACT_API_KEY')
     ){
-   
+
       $cc = new ConstantContact(Environment::getEnv('CONSTANTCONTACT_API_KEY'));
 
       // attempt to fetch lists in the account, catching any exceptions and printing the errors to screen
