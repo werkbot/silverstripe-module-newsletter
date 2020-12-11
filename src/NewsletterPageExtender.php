@@ -82,6 +82,7 @@ class NewsletterPageExtender extends DataExtension {
     $status = true;
   	$config = SiteConfig::current_site_config();
 
+    // Insert Into Campaign Monitor
     if($config->NewsletterAPI=="campaignmonitor" && $config->CampaignMonitorListID){
       $auth = array('api_key' => Environment::getEnv('CAMPAIGNMONITOR_API_KEY'));
       $wrap = new CS_REST_Subscribers($config->CampaignMonitorListID, $auth);
@@ -157,6 +158,23 @@ class NewsletterPageExtender extends DataExtension {
           }
       }
 
+    }
+
+    // Insert Into Active Campaign
+    if($config->NewsletterAPI=="activecampaign"
+      && Environment::getEnv('ACTIVECAMPAIGN_URL')
+      && Environment::getEnv('ACTIVECAMPAIGN_API_KEY')
+    ){
+      // Add this user to Active Campaign
+      $ac = new ActiveCampaign(Environment::getEnv('ACTIVECAMPAIGN_URL'), Environment::getEnv('ACTIVECAMPAIGN_API_KEY'));
+      if ($ac->credentials_test()) {
+        $contact = [
+          "email" => $Email,
+          "p[{$config->ActiveCampaignListID}]" => $config->ActiveCampaignListID,
+          "status[{$config->ActiveCampaignListID}]" => 1, // "Active" status
+        ];
+        $contact_sync = $ac->api("contact/sync", $contact);
+      }
     }
 
     //SAVE SUBMISSION NO MATTER WHAT API (or if none)
