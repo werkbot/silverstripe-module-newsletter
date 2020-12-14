@@ -6,7 +6,8 @@
     "silverstripe/cms": "~4.0",
     "silverstripe/framework": "~4.0",
     "campaignmonitor/createsend-php": "*",
-    "constantcontact/constantcontact": "dev-v1-master"
+    "constantcontact/constantcontact": "dev-v1-master",
+    "activecampaign/api-php": "*"
   },
   "extra": {
     "expose": [

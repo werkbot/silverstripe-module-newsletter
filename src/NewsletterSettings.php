@@ -12,12 +12,13 @@ use Ctct\ConstantContact;
 class NewsletterSettings extends DataExtension {
 	/**/
 	private static $db = [
-		'NewsletterAPI' => "Enum('campaignmonitor,mailchimp,constantcontact,none', 'none')",
+		'NewsletterAPI' => "Enum('campaignmonitor,mailchimp,constantcontact,activecampaign,none', 'none')",
 		"NewsletterSuccessText" => "HTMLText",
 		"NewsletterErrorText" => "HTMLText",
 
     'CampaignMonitorListID' => "Text",
-    'ConstantContactListID' => "Text"
+    'ConstantContactListID' => "Text",
+    'ActiveCampaignListID' => "Text"
 	];
 	/**/
   public function updateCMSFields(FieldList $fields) {
@@ -32,6 +33,7 @@ class NewsletterSettings extends DataExtension {
 				array(
 					'campaignmonitor' => 'Campaign Monitor',
 					'constantcontact' => 'Constant Contact',
+					'activecampaign' => 'Active Campaign',
 					'none' => 'No API'
 				),
 				'none'
@@ -64,6 +66,28 @@ class NewsletterSettings extends DataExtension {
       $ConstantContactListID = DropdownField::create("ConstantContactListID", "Select a list", $listarray)
         ->displayIf("NewsletterAPI")->isEqualTo("constantcontact")->end();
   		$fields->addFieldToTab('Root.Newsletter', $ConstantContactListID);
+    }
+
+    // Active Campaign
+    if(Environment::getEnv('ACTIVECAMPAIGN_API_KEY') && Environment::getEnv('ACTIVECAMPAIGN_URL')){  
+	  // Active Campaign List Select
+	  $ac = new ActiveCampaign(Environment::getEnv('ACTIVECAMPAIGN_URL'), Environment::getEnv('ACTIVECAMPAIGN_API_KEY'));
+	  // Adjust the default cURL timeout
+	  $ac->set_curl_timeout(10);
+	  $params = [
+	    'ids'  => 'all',
+	  ];
+	  $lists = $ac->api( "list/list_", $params );
+	  $listarray = [];
+	  foreach($lists as $list){
+	    if(is_object($list)){
+	      $listarray[$list->id] = $list->name;
+	    }
+	  }
+
+      $ActiveCampaignListID = DropdownField::create("ActiveCampaignListID", "Select a list", $listarray)
+        ->displayIf("NewsletterAPI")->isEqualTo("activecampaign")->end();
+  		$fields->addFieldToTab('Root.Newsletter', $ActiveCampaignListID);
     }
 
 		/**/
