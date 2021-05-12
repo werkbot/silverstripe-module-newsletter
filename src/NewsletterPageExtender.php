@@ -1,16 +1,17 @@
 <?php
 /**/
-use SilverStripe\Core\Environment;
-use SilverStripe\SiteConfig\SiteConfig;
-use SilverStripe\Forms\EmailField;
-use SilverStripe\Forms\FieldList;
+use Ctct\ConstantContact;
 use SilverStripe\Forms\Form;
+use MailchimpMarketing\ApiClient;
+use SilverStripe\Forms\FieldList;
+use Ctct\Exceptions\CtctException;
+use SilverStripe\Core\Environment;
+use SilverStripe\Forms\EmailField;
 use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\RequiredFields;
 use SilverStripe\ORM\DataExtension;
 use Ctct\Components\Contacts\Contact;
-use Ctct\ConstantContact;
-use Ctct\Exceptions\CtctException;
+use SilverStripe\Forms\RequiredFields;
+use SilverStripe\SiteConfig\SiteConfig;
 /**/
 class NewsletterPageExtender extends DataExtension {
 	/**/
@@ -91,6 +92,23 @@ class NewsletterPageExtender extends DataExtension {
         'ConsentToTrack' => 'yes',
         'Resubscribe' => true
       ));
+    }
+
+    // Insert Into Mailchimp
+    if($config->NewsletterAPI=="mailchimp" && $config->MailchimpListID){
+      $mailchimp = new ApiClient();
+      $mailchimp->setConfig([
+        'apiKey' => Environment::getEnv('MAILCHIMP_API_KEY'),
+        'server' => Environment::getEnv('MAILCHIMP_SERVER_PREFIX')
+      ]);
+      try{
+        $response = $mailchimp->lists->setListMember($config->MailchimpListID, md5($Email), [
+          "email_address" => $Email,
+          "status_if_new" => "subscribed",
+        ]);
+      }catch (GuzzleHttp\Exception\ClientException $e) {
+        // Issue while adding
+      }
     }
 
     // Insert Into Constant Contact
