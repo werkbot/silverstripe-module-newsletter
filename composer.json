@@ -7,7 +7,8 @@
     "silverstripe/framework": "~4.0",
     "campaignmonitor/createsend-php": "*",
     "constantcontact/constantcontact": "dev-v1-master",
-    "activecampaign/api-php": "*"
+    "activecampaign/api-php": "*",
+    "mailchimp/marketing": "*"
   },
   "extra": {
     "expose": [
