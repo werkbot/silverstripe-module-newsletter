@@ -4,6 +4,7 @@ use Ctct\ConstantContact;
 use SilverStripe\Forms\Form;
 use MailchimpMarketing\ApiClient;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextField;
 use Ctct\Exceptions\CtctException;
 use SilverStripe\Core\Environment;
 use SilverStripe\Forms\EmailField;
@@ -30,7 +31,15 @@ class NewsletterPageExtender extends DataExtension {
 			$fields = new FieldList(
 				EmailField::create("Email", _t("NewsletterForm.LABEL", "Enter Email"))
 					->setAttribute('title', _t("NewsletterForm.TITLE", "Enter Your Email"))
-					->setAttribute('placeholder', _t("NewsletterForm.PLACEHOLDER", "Enter Your Email"))
+					->setAttribute('placeholder', _t("NewsletterForm.PLACEHOLDER", "Enter Your Email")),
+
+				TextField::create("FirstName", _t("NewsletterForm.LABEL_FIRSTNAME", "First Name"))
+          ->setAttribute('title', _t("NewsletterForm.TITLE_FIRSTNAME", "Enter Your First Name"))
+          ->setAttribute('placeholder', _t("NewsletterForm.PLACEHOLDER_FIRSTNAME", "Enter Your First Name")),
+
+        TextField::create("LastName", _t("NewsletterForm.LABEL_LASTNAME", "Last Name"))
+          ->setAttribute('title', _t("NewsletterForm.TITLE_LASTNAME", "Enter Your Last Name"))
+          ->setAttribute('placeholder', _t("NewsletterForm.PLACEHOLDER_LASTNAME", "Enter Your Last Name"))
 			);
 
 			//ACTIONS
@@ -79,7 +88,7 @@ class NewsletterPageExtender extends DataExtension {
 		}
 	}
   /**/
-  public function InsertToNewsletter($Email){
+  public function InsertToNewsletter($Email, $FirstName="", $LastName=""){
     $status = true;
   	$config = SiteConfig::current_site_config();
 
@@ -89,6 +98,7 @@ class NewsletterPageExtender extends DataExtension {
       $wrap = new CS_REST_Subscribers($config->CampaignMonitorListID, $auth);
       $result = $wrap->add(array(
         'EmailAddress' => $Email,
+        'Name' => $FirstName." ".$LastName,
         'ConsentToTrack' => 'yes',
         'Resubscribe' => true
       ));
@@ -104,6 +114,7 @@ class NewsletterPageExtender extends DataExtension {
       try{
         $response = $mailchimp->lists->setListMember($config->MailchimpListID, md5($Email), [
           "email_address" => $Email,
+          "full_name" => $FirstName." ".$LastName,
           "status_if_new" => "subscribed",
         ]);
       }catch (GuzzleHttp\Exception\ClientException $e) {
@@ -145,8 +156,8 @@ class NewsletterPageExtender extends DataExtension {
                   $contact = new Contact();
                   $contact->addEmail($Email);
                   $contact->addList($config->ConstantContactListID);
-                  // $contact->first_name = $_POST['first_name'];
-                  // $contact->last_name = $_POST['last_name'];
+                  $contact->first_name = $FirstName;
+                  $contact->last_name = $LastName;
 
                   $returnContact = $cc->addContact(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), $contact, true);
 
@@ -156,8 +167,6 @@ class NewsletterPageExtender extends DataExtension {
                   $contact = $response->results[0];
                   if ($contact instanceof Contact) {
                       $contact->addList($config->ConstantContactListID);
-                      // $contact->first_name = $_POST['first_name'];
-                      // $contact->last_name = $_POST['last_name'];
 
                       $returnContact = $cc->updateContact(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), $contact, true);
                   } else {
@@ -188,6 +197,8 @@ class NewsletterPageExtender extends DataExtension {
       if ($ac->credentials_test()) {
         $contact = [
           "email" => $Email,
+          "firstName" => $FirstName,
+          "lastName" => $LastName,
           "p[{$config->ActiveCampaignListID}]" => $config->ActiveCampaignListID,
           "status[{$config->ActiveCampaignListID}]" => 1, // "Active" status
         ];
@@ -198,6 +209,8 @@ class NewsletterPageExtender extends DataExtension {
     //SAVE SUBMISSION NO MATTER WHAT API (or if none)
     $submission = new NewsletterSubmission();
     $submission->Email = $Email;
+    $submission->FirstName = $FirstName;
+    $submission->LastName = $LastName;
     $submission->write();
 
     return $status;

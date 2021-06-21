@@ -12,7 +12,9 @@ class NewsletterSubmission extends DataObject {
   private static $default_sort = "Created DESC";
   /**/
   private static $db = [
-    "Email" => 'Text',
+    "Email" => "Text",
+    "FirstName" => "Text",
+    "LastName" => "Text",
   ];
   /**/
   private static $summary_fields = [
@@ -29,7 +31,9 @@ class NewsletterSubmission extends DataObject {
     //
     $fields = new FieldList(
       ReadOnlyField::create("Created", "Created Date"),
-      ReadOnlyField::create("Email", "Email")
+      ReadOnlyField::create("Email", "Email"),
+      ReadOnlyField::create("FirstName", "First Name"),
+      ReadOnlyField::create("LastName", "Last Name")
     );
     //
     $this->extend('updateCMSFields', $fields);
