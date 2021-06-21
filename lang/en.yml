@@ -1,6 +1,12 @@
 en:
   NewsletterForm:
-    LABEL: 'Enter Email'
+    LABEL: 'Email'
+    LABEL_FIRSTNAME: 'First Name'
+    LABEL_LASTNAME: 'Last Name'
     TITLE: 'Enter your email'
+    TITLE_FIRSTNAME: 'Enter your first name'
+    TITLE_LASTNAME: 'Enter your last name'
     PLACEHOLDER: 'Enter your email'
+    PLACEHOLDER_FIRSTNAME: 'Enter your first name'
+    PLACEHOLDER_LASTNAME: 'Enter your last name'
     ACTION: 'Sign Up'
