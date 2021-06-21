@@ -3,5 +3,6 @@
   use SilverStripe\SiteConfig\SiteConfig;
   /**/
 	SiteConfig::add_extension('NewsletterSettings');
-	PageController::add_extension('NewsletterPageExtender');
+	Page::add_extension('NewsletterPageExtender');
+	PageController::add_extension('NewsletterPageControllerExtender');
 ?>
