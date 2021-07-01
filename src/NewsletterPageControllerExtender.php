@@ -204,8 +204,8 @@ class NewsletterPageControllerExtender extends DataExtension {
       if ($ac->credentials_test()) {
         $contact = [
           "email" => $Email,
-          "firstName" => $FirstName,
-          "lastName" => $LastName,
+          "first_name" => $FirstName,
+          "last_name" => $LastName,
           "p[{$config->ActiveCampaignListID}]" => $config->ActiveCampaignListID,
           "status[{$config->ActiveCampaignListID}]" => 1, // "Active" status
         ];
