@@ -117,11 +117,15 @@ class NewsletterPageControllerExtender extends DataExtension {
       try{
         $response = $mailchimp->lists->setListMember($config->MailchimpListID, md5($Email), [
           "email_address" => $Email,
-          "full_name" => $FirstName." ".$LastName,
+          "merge_fields" => [
+            "FNAME" => $FirstName,
+            "LNAME" => $LastName,
+          ],
           "status_if_new" => "subscribed",
         ]);
       }catch (GuzzleHttp\Exception\ClientException $e) {
         // Issue while adding
+        $status = false;
       }
     }
 
