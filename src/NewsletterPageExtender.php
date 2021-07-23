@@ -29,7 +29,7 @@ class NewsletterPageExtender extends DataExtension {
     );
 
     $NewsletterTab->push(new Tab('NewsletterTab', 'Newsletter Options',
-      $NewsletterShowHide,
+      $NewsletterShowHide
     ));
   }
 }
