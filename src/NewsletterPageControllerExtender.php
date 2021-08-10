@@ -58,7 +58,13 @@ class NewsletterPageControllerExtender extends DataExtension {
 
 			//CREATE THE FORM
 			$Form = new Form($this->owner, "NewsletterForm", $fields, $actions, $validator);
-		    $data = array();
+
+      // Enable Recaptcha if enabled
+      if(Environment::getEnv('NEWSLETTER_RECAPTCHA')){
+        $Form->enableSpamProtection();
+      }
+
+      $data = array();
       $Form->customise($data)->setTemplate(['Forms\\NewsletterForm', 'NewsletterForm']);
 
 			return $Form;
