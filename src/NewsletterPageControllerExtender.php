@@ -176,7 +176,7 @@ class NewsletterPageControllerExtender extends DataExtension {
                   $contact->first_name = $FirstName;
                   $contact->last_name = $LastName;
 
-                  $this->owner->extend("updateConstantContactNewsletter", $contact);
+                  $this->owner->extend("updateCreateConstantContactNewsletter", $contact);
 
                   $returnContact = $cc->addContact(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), $contact, true);
 
