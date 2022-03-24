@@ -105,12 +105,16 @@ class NewsletterPageControllerExtender extends DataExtension {
     if($config->NewsletterAPI=="campaignmonitor" && $config->CampaignMonitorListID){
       $auth = array('api_key' => Environment::getEnv('CAMPAIGNMONITOR_API_KEY'));
       $wrap = new CS_REST_Subscribers($config->CampaignMonitorListID, $auth);
-      $result = $wrap->add(array(
+      //
+      $data = array(
         'EmailAddress' => $Email,
         'Name' => $FirstName." ".$LastName,
         'ConsentToTrack' => 'yes',
         'Resubscribe' => true
-      ));
+      );
+      //
+      $this->owner->extend("updateCampaignMonitorNewsletter", $data);
+      $result = $wrap->add($data);
     }
 
     // Insert Into Mailchimp
@@ -172,6 +176,8 @@ class NewsletterPageControllerExtender extends DataExtension {
                   $contact->first_name = $FirstName;
                   $contact->last_name = $LastName;
 
+                  $this->owner->extend("updateCreateConstantContactNewsletter", $contact);
+
                   $returnContact = $cc->addContact(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), $contact, true);
 
               } else { // update the existing contact if address already existed
@@ -180,6 +186,8 @@ class NewsletterPageControllerExtender extends DataExtension {
                   $contact = $response->results[0];
                   if ($contact instanceof Contact) {
                       $contact->addList($config->ConstantContactListID);
+
+                      $this->owner->extend("updateConstantContactNewsletter", $contact);
 
                       $returnContact = $cc->updateContact(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), $contact, true);
                   } else {
@@ -215,6 +223,9 @@ class NewsletterPageControllerExtender extends DataExtension {
           "p[{$config->ActiveCampaignListID}]" => $config->ActiveCampaignListID,
           "status[{$config->ActiveCampaignListID}]" => 1, // "Active" status
         ];
+
+        $this->owner->extend("updateActiveCampaignContactNewsletter", $contact);
+
         $contact_sync = $ac->api("contact/sync", $contact);
       }
     }
