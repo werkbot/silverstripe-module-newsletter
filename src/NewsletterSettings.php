@@ -12,7 +12,7 @@ use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 class NewsletterSettings extends DataExtension {
 	/**/
 	private static $db = [
-		'NewsletterAPI' => "Enum('campaignmonitor,mailchimp,constantcontact,activecampaign,none', 'none')",
+		'NewsletterAPI' => "Enum('campaignmonitor,mailchimp,constantcontact,activecampaign,redtail,none', 'none')",
 		"NewsletterSuccessText" => "HTMLText",
 		"NewsletterErrorText" => "HTMLText",
 
@@ -36,6 +36,7 @@ class NewsletterSettings extends DataExtension {
 					'mailchimp' => 'Mail Chimp',
 					'constantcontact' => 'Constant Contact',
 					'activecampaign' => 'Active Campaign',
+          'redtail' => 'Redtail',
 					'none' => 'No API'
 				),
 				'none'
