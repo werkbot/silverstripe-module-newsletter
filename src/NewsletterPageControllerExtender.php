@@ -56,6 +56,8 @@ class NewsletterPageControllerExtender extends DataExtension {
 			//VALIDATORS
 			$validator = new RequiredFields('Email');
 
+      $this->owner->extend('updateNewsletterFormFields', $fields);
+
 			//CREATE THE FORM
 			$Form = new Form($this->owner, "NewsletterForm", $fields, $actions, $validator);
 
