@@ -56,6 +56,8 @@ class NewsletterPageControllerExtender extends DataExtension {
 			//VALIDATORS
 			$validator = new RequiredFields('Email');
 
+      $this->owner->extend('updateNewsletterFormFields', $fields);
+
 			//CREATE THE FORM
 			$Form = new Form($this->owner, "NewsletterForm", $fields, $actions, $validator);
 
@@ -228,6 +230,35 @@ class NewsletterPageControllerExtender extends DataExtension {
 
         $contact_sync = $ac->api("contact/sync", $contact);
       }
+    }
+
+    // Insert Into Redtail
+    if($config->NewsletterAPI=="redtail"
+      && Environment::getEnv('REDTAIL_URL')
+      && Environment::getEnv('REDTAIL_API_KEY')
+      && Environment::getEnv('REDTAIL_USER')
+      && Environment::getEnv('REDTAIL_PASSWORD')
+    ){
+      $REDTAIL_URL = Environment::getEnv('REDTAIL_URL');
+      $REDTAIL_API_KEY = Environment::getEnv('REDTAIL_API_KEY');
+      $REDTAIL_USER = Environment::getEnv('REDTAIL_USER');
+      $REDTAIL_PASSWORD = Environment::getEnv('REDTAIL_PASSWORD');
+
+      // Encoded username/pass
+      $encodedAuth = base64_encode("$REDTAIL_API_KEY:$REDTAIL_USER:$REDTAIL_PASSWORD");
+
+      // Add contact to Redtail
+      $contact = NewsletterCurlHelper::Instance()->callCurl($REDTAIL_URL . '/contacts', json_encode([
+        'type' => 'Crm::Contact::Individual',
+        'first_name' => $FirstName,
+        'last_name' => $LastName,
+      ]), $encodedAuth);
+
+      // Add email to Redtail
+      $contactEmail = NewsletterCurlHelper::Instance()->callCurl($REDTAIL_URL . '/contacts/' . $contact->contact->id . '/emails', json_encode([
+        'email_type' => 3, // 1: "Home", 2: "Work", 3: "Other"
+        'address' => $Email,
+      ]), $encodedAuth);
     }
 
     //SAVE SUBMISSION NO MATTER WHAT API (or if none)
