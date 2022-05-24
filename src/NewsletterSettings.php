@@ -1,5 +1,7 @@
 <?php
-
+/**/
+namespace Werkbot\Newsletter;
+/**/
 use Ctct\ConstantContact;
 use MailchimpMarketing\ApiClient;
 use SilverStripe\Forms\FieldList;

@@ -1,5 +1,7 @@
 <?php
 /**/
+namespace Werkbot\Newsletter;
+/**/
 class NewsletterCurlHelper
 {
   /*

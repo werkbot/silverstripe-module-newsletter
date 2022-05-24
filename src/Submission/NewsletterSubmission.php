@@ -1,5 +1,7 @@
 <?php
-
+/**/
+namespace Werkbot\Newsletter;
+/**/
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\ReadOnlyField;
 use SilverStripe\ORM\DataObject;

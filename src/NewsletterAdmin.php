@@ -1,5 +1,7 @@
 <?php
-
+/**/
+namespace Werkbot\Newsletter;
+/**/
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Forms\GridField\GridFieldFilterHeader;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;

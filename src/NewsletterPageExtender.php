@@ -1,5 +1,7 @@
 <?php
-
+/**/
+namespace Werkbot\Newsletter;
+/**/
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FieldGroup;
