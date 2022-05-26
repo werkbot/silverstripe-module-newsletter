@@ -1,10 +1,11 @@
 <?php
-/**/
+
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\ReadOnlyField;
 use SilverStripe\ORM\DataObject;
-/**/
-class NewsletterSubmission extends DataObject {
+
+class NewsletterSubmission extends DataObject
+{
   /**/
   private static $singular_name = 'Newsletter Submission';
   private static $plural_name = 'Newsletter Submissions';
@@ -27,7 +28,8 @@ class NewsletterSubmission extends DataObject {
     "Email"
   ];
   /**/
-  public function getCMSFields() {
+  public function getCMSFields()
+  {
     //
     $fields = new FieldList(
       ReadOnlyField::create("Created", "Created Date"),
