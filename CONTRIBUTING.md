@@ -7,4 +7,4 @@
 
 
 ## Contributor license agreement
-See license: https://github.com/werkbot/silverstripe-module-search/blob/master/LICENSE
+See license: https://github.com/werkbot/silverstripe-module-newsletter/blob/master/LICENSE
