@@ -1,7 +1,7 @@
 <?php
-/**/
+
 namespace Werkbot\Newsletter;
-/**/
+
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\ReadOnlyField;
 use SilverStripe\ORM\DataObject;
@@ -11,8 +11,9 @@ class NewsletterSubmission extends DataObject
   /**/
   private static $singular_name = 'Newsletter Submission';
   private static $plural_name = 'Newsletter Submissions';
-  /**/
+  private static $table_name = 'NewsletterSubmission';
   private static $default_sort = "Created DESC";
+
   /**/
   private static $db = [
     "Email" => "Text",

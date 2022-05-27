@@ -1,16 +1,16 @@
 <?php
-/**/
+
 namespace Werkbot\Newsletter;
-/**/
+
 use SilverStripe\Admin\ModelAdmin;
-use SilverStripe\Forms\GridField\GridFieldFilterHeader;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 
+/** */
 class NewsletterAdmin extends ModelAdmin
 {
   /**/
   private static $managed_models = [
-    "NewsletterSubmission",
+    NewsletterSubmission::class,
   ];
   /**/
   private static $url_segment = 'newsletter-submissions';
@@ -22,9 +22,7 @@ class NewsletterAdmin extends ModelAdmin
   public function getEditForm($id = null, $fields = null)
   {
     $form = parent::getEditForm($id, $fields);
-
     $gridField = $form->Fields()->fieldByName($this->sanitiseClassName($this->modelClass));
-    $gridField->getConfig()->addComponent(new GridFieldFilterHeader());
     $gridField->getConfig()->removeComponentsByType(GridFieldAddNewButton::class);
     return $form;
   }

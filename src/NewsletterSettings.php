@@ -1,7 +1,7 @@
 <?php
-/**/
+
 namespace Werkbot\Newsletter;
-/**/
+
 use Ctct\ConstantContact;
 use MailchimpMarketing\ApiClient;
 use SilverStripe\Forms\FieldList;
@@ -11,6 +11,7 @@ use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 
+/** */
 class NewsletterSettings extends DataExtension
 {
   /**/
@@ -50,7 +51,7 @@ class NewsletterSettings extends DataExtension
     // Campaign Monitor
     if (Environment::getEnv('CAMPAIGNMONITOR_API_KEY') && Environment::getEnv('CAMPAIGNMONITOR_CLIENT_ID')) {
       $auth = array('api_key' => Environment::getEnv('CAMPAIGNMONITOR_API_KEY'));
-      $wrap = new CS_REST_Clients(Environment::getEnv('CAMPAIGNMONITOR_CLIENT_ID'), $auth);
+      $wrap = new \CS_REST_Clients(Environment::getEnv('CAMPAIGNMONITOR_CLIENT_ID'), $auth);
       $result = $wrap->get_lists();
       $listarray = array();
       foreach ($result->response as $list) {
@@ -94,7 +95,7 @@ class NewsletterSettings extends DataExtension
     // Active Campaign
     if (Environment::getEnv('ACTIVECAMPAIGN_API_KEY') && Environment::getEnv('ACTIVECAMPAIGN_URL')) {
       // Active Campaign List Select
-      $ac = new ActiveCampaign(Environment::getEnv('ACTIVECAMPAIGN_URL'), Environment::getEnv('ACTIVECAMPAIGN_API_KEY'));
+      $ac = new \ActiveCampaign(Environment::getEnv('ACTIVECAMPAIGN_URL'), Environment::getEnv('ACTIVECAMPAIGN_API_KEY'));
       // Adjust the default cURL timeout
       $ac->set_curl_timeout(10);
       $params = [

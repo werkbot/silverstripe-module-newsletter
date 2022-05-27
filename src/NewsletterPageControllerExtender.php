@@ -1,7 +1,7 @@
 <?php
-/**/
+
 namespace Werkbot\Newsletter;
-/**/
+
 use Ctct\ConstantContact;
 use SilverStripe\Forms\Form;
 use MailchimpMarketing\ApiClient;
@@ -16,6 +16,7 @@ use Ctct\Components\Contacts\Contact;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\SiteConfig\SiteConfig;
 
+/** */
 class NewsletterPageControllerExtender extends DataExtension
 {
   /**/
@@ -112,7 +113,7 @@ class NewsletterPageControllerExtender extends DataExtension
     // Insert Into Campaign Monitor
     if ($config->NewsletterAPI == "campaignmonitor" && $config->CampaignMonitorListID) {
       $auth = array('api_key' => Environment::getEnv('CAMPAIGNMONITOR_API_KEY'));
-      $wrap = new CS_REST_Subscribers($config->CampaignMonitorListID, $auth);
+      $wrap = new \CS_REST_Subscribers($config->CampaignMonitorListID, $auth);
       //
       $data = array(
         'EmailAddress' => $Email,
@@ -141,7 +142,7 @@ class NewsletterPageControllerExtender extends DataExtension
           ],
           "status_if_new" => "subscribed",
         ]);
-      } catch (GuzzleHttp\Exception\ClientException $e) {
+      } catch (\GuzzleHttp\Exception\ClientException $e) {
         // Issue while adding
         $status = false;
       }
@@ -221,7 +222,7 @@ class NewsletterPageControllerExtender extends DataExtension
       && Environment::getEnv('ACTIVECAMPAIGN_API_KEY')
     ) {
       // Add this user to Active Campaign
-      $ac = new ActiveCampaign(Environment::getEnv('ACTIVECAMPAIGN_URL'), Environment::getEnv('ACTIVECAMPAIGN_API_KEY'));
+      $ac = new \ActiveCampaign(Environment::getEnv('ACTIVECAMPAIGN_URL'), Environment::getEnv('ACTIVECAMPAIGN_API_KEY'));
       if ($ac->credentials_test()) {
         $contact = [
           "email" => $Email,

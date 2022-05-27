@@ -1,13 +1,14 @@
 <?php
-/**/
+
 namespace Werkbot\Newsletter;
-/**/
+
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\Forms\CheckboxField;
 
+/** */
 class NewsletterPageExtender extends DataExtension
 {
   /**/
