@@ -3,7 +3,6 @@
 namespace Werkbot\Newsletter;
 
 use SilverStripe\Dev\BuildTask;
-use SilverStripe\Core\Config\Config;
 
 /** */
 class RemoveSubmissions extends BuildTask
@@ -12,10 +11,11 @@ class RemoveSubmissions extends BuildTask
   protected $title = "Remove Submissions";
   protected $description = "Removes old newsletter submissions from the database.";
   protected $enabled = true;
+  private static $remove_submission_cuttoff = "-30 days";
   /**/
   public function run($request)
   {
-    $CutoffDate = date('Y-m-d H:i:s', strtotime(Config::inst()->get('Werkbot\Newsletter', 'remove_submittion_cuttoff')));
+    $CutoffDate = date('Y-m-d H:i:s', strtotime($this->config()->remove_submission_cuttoff));
     $NewsletterSubmissions = NewsletterSubmission::get()->filter(array("Created:LessThan" => $CutoffDate));
     $Total = $NewsletterSubmissions->Count();
     $NewsletterSubmissions->removeAll();
