@@ -44,3 +44,14 @@ Run `grunt build` to compile styles
           </div>
         </div>
       <% end_if %>
+
+## Remove Submissions Task
+The remove submission task will remove newsletter submissions older then the default of 30 days. 
+This value can be altered with the following:
+```
+---
+Name: Newsletter
+---
+Werkbot\Newsletter\RemoveSubmissions:
+  remove_submission_cuttoff: -130 days
+```

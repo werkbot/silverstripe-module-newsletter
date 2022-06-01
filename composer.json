@@ -12,5 +12,10 @@
     "constantcontact/constantcontact": "^2.1",
     "activecampaign/api-php": "^2.0",
     "mailchimp/marketing": "^3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Werkbot\\Newsletter\\": "src/"
+    }
   }
 }
