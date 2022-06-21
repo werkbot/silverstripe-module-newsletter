@@ -2,11 +2,9 @@
 
 namespace Werkbot\Newsletter;
 
-use Ctct\ConstantContact;
 use MailchimpMarketing\ApiClient;
 use SilverStripe\Core\Environment;
 use SilverStripe\Dev\FunctionalTest;
-use SilverStripe\SiteConfig\SiteConfig;
 
 /**
  * Run with:
@@ -20,12 +18,12 @@ class NewsletterTest extends FunctionalTest
    */
   public function testConnectionCampaignMonitor()
   {
-    if(Environment::getEnv('CAMPAIGNMONITOR_API_KEY')){
+    if (Environment::getEnv('CAMPAIGNMONITOR_API_KEY')) {
       $auth = array('api_key' => Environment::getEnv('CAMPAIGNMONITOR_API_KEY'));
       $wrap = new \CS_REST_General($auth);
       $result = $wrap->get_clients();
       $this->assertEquals(200, $result->http_status_code);
-    }else{
+    } else {
       $this->markTestSkipped('api key not set in the env.');
     }
   }
@@ -34,7 +32,7 @@ class NewsletterTest extends FunctionalTest
    */
   public function testConnectionMailchimp()
   {
-    if(Environment::getEnv('MAILCHIMP_API_KEY') && Environment::getEnv('MAILCHIMP_SERVER_PREFIX')){
+    if (Environment::getEnv('MAILCHIMP_API_KEY') && Environment::getEnv('MAILCHIMP_SERVER_PREFIX')) {
       $mailchimp = new ApiClient();
       $mailchimp->setConfig([
         'apiKey' => Environment::getEnv('MAILCHIMP_API_KEY'),
@@ -42,19 +40,31 @@ class NewsletterTest extends FunctionalTest
       ]);
       $response = $mailchimp->ping->getWithHttpInfo();
       $this->assertEquals("Everything's Chimpy!", $response->health_status);
-    }else{
+    } else {
       $this->markTestSkipped('api key not set in the env.');
     }
   }
   /**
    * Test Connection - Constant Contact
    */
-  public function testConnectionConstantContact()
+  /*public function testConnectionConstantContact()
   {
-    if(Environment::getEnv('CONSTANTCONTACT_API_KEY') && Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN')){
+    if (Environment::getEnv('CONSTANTCONTACT_API_KEY') && Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN')) {
       $cc = new ConstantContact(Environment::getEnv('CONSTANTCONTACT_API_KEY'));
 
-    }else{
+    } else {
+      $this->markTestSkipped('api key not set in the env.');
+    }
+  }*/
+  /**
+   * Test Connection - Active Campaign
+   */
+  public function testConnectionActiveCampaign()
+  {
+    if (Environment::getEnv('ACTIVECAMPAIGN_URL') && Environment::getEnv('ACTIVECAMPAIGN_API_KEY')) {
+      $ac = new \ActiveCampaign(Environment::getEnv('ACTIVECAMPAIGN_URL'), Environment::getEnv('ACTIVECAMPAIGN_API_KEY'));
+      $this->assertEquals(true, $ac->credentials_test());
+    } else {
       $this->markTestSkipped('api key not set in the env.');
     }
   }

@@ -13,6 +13,9 @@
     "activecampaign/api-php": "^2.0",
     "mailchimp/marketing": "^3.0"
   },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  },
   "autoload": {
     "psr-4": {
       "Werkbot\\Newsletter\\": "src/"
