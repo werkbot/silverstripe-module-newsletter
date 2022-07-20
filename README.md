@@ -1,57 +1,29 @@
-# Newsletter Module
-Silverstripe module to capture user emails.
-## Requirements
+# SilverStripe Newsletter Module
+
+Silverstripe module to capture user emails. This also integrates with third-party mail subscription services:
+- Campaign Monitor
+- Mailchimp
+- Constant Contact
+- Active Campaign
+- Redtail CRM
+
+## Installation
+```
+composer require werkbot/newsletter-module
+```
+
+#### Requirements
 - Silverstripe ^4.0
 
 ## Setup
-Update composer.json:
+- You will need to run `/dev/build`
+- Place `$NewsletterForm` somewhere in your template.
+- To use the correct styles, include this in your main sass file:
 
-	"repositories": [
-		...
-      {
-	        "type": "vcs",
-	        "url": "https://github.com/werkbot/silverstripe-module-newsletter.git"
-	  }
-	],
-	"require": [
-		...
-		"werkbot/newsletter-module": "*"
-	]
+`@import 'newsletter-module/sass/newsletter';`
 
-Run `composer update`
+> *Depending on your setup, you may need to include `vendor/werkbot` in your build path. For example, we include: `includePaths: [ 'vendor/werkbot' ]` for sass*
 
-Run `/dev/build` on your site
-
-You can use `$NewsletterForm` in your templates:
-
-To use the correct styles, create a sass/components/newsletter folder, and copy _newsletter.scss from vendor/werkbot/newsletter-module/sass here
-
-Import the file in common.scss `@import 'components/newsletter/newsletter';`
-
-Run `grunt build` to compile styles
 
 ## Usage
-- The newsletter submissions will appear in their own tab
-- Newsletter settings exist in the settings tab
-- The admin can add success and error messages to display when the form is submitted. You must include this message in your template:
-
-      <% if $NewsletterMessage %>
-        <div class="newsletter-message $MessageType">
-          <div class="container">
-            <div class="space">
-              $NewsletterMessage.RAW
-            </div>
-          </div>
-        </div>
-      <% end_if %>
-
-## Remove Submissions Task
-The remove submission task will remove newsletter submissions older then the default of 30 days. 
-This value can be altered with the following:
-```
----
-Name: Newsletter
----
-Werkbot\Newsletter\RemoveSubmissions:
-  remove_submission_cuttoff: -130 days
-```
+* [Usage documentation](docs/en/README.md)
