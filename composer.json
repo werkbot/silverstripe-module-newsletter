@@ -8,10 +8,13 @@
     "php": "^7.3 || ^8.0",
     "silverstripe/cms": "~4.0",
     "silverstripe/framework": "~4.0",
-    "campaignmonitor/createsend-php": "^v7.0",
-    "constantcontact/constantcontact": "^2.1",
-    "activecampaign/api-php": "^2.0",
-    "mailchimp/marketing": "^3.0"
+    "campaignmonitor/createsend-php": "*",
+    "constantcontact/constantcontact": "*",
+    "activecampaign/api-php": "*",
+    "mailchimp/marketing": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
   },
   "autoload": {
     "psr-4": {
