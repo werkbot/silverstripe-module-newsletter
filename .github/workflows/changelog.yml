@@ -1,0 +1,33 @@
+name: Generate Changelog
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  update_changelog:
+    runs-on: ubuntu-latest
+    outputs:
+      output: ${{ steps.changelog.outputs.changelog }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+      - name: Generate Changelog
+        id: changelog
+        uses: loopwerk/tag-changelog@v1.0.4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          exclude_types: other,doc,chore
+          config_file: .github/tag-changelog-config.js
+      - name: Output Changelog
+        id: output_changelog
+        run: TAGCONTENT="${{ steps.changelog.outputs.changelog }}";CHANGELOG=$(cat CHANGELOG.md);CHANGELOG=$(echo "$CHANGELOG" | sed -e "s/# Changelog//");echo -e "# Changelog\n\n$TAGCONTENT$CHANGELOG" > CHANGELOG.md
+      - name: Commit Updated Changelog
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Updated CHANGELOG.md
