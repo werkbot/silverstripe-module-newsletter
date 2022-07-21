@@ -13,10 +13,10 @@ class NewsletterPageExtender extends DataExtension
 {
   /**/
   private static $db = [
-    "NewsletterShowHide" => "Boolean",
+    "NewsletterShowHide" => "Boolean(1)",
   ];
   /**/
-  private static $default = [
+  private static $defaults = [
     "NewsletterShowHide" => true,
   ];
   /**/
