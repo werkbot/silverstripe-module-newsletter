@@ -16,15 +16,21 @@ use Ctct\Components\Contacts\Contact;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\SiteConfig\SiteConfig;
 
-/** */
+/**
+ * A PageController extension that handles newsletter related requests.
+ */
 class NewsletterPageControllerExtender extends DataExtension
 {
-  /**/
   private static $allowed_actions = [
     "NewsletterForm",
     "InsertToNewsletter",
   ];
-  /**/
+
+  /**
+   * The Newsletter Form
+   *
+   * @return Form $Form
+   */
   public function NewsletterForm()
   {
     if (!$this->owner->NewsletterShowHide) {
@@ -77,7 +83,14 @@ class NewsletterPageControllerExtender extends DataExtension
       return $Form;
     }
   }
-  /**/
+
+  /**
+   * Processes the newsletter form submit.
+   *
+   * @param array $data - Form data in the form of an array
+   * @param Form $data - The newsletter form instance
+   * @return DBHTMLText|HTTPResponse
+   */
   public function ProcessNewsletterForm($data, Form $form)
   {
 
@@ -104,7 +117,15 @@ class NewsletterPageControllerExtender extends DataExtension
       return $this->owner->customise($resultdata)->renderWith(array($this->owner->ClassName, 'Page', 'NewsletterFormSubmission'));
     }
   }
-  /**/
+
+  /**
+   * Creates a new NewsletterSubmission and inserts subscriber info into optional thirdparty mailing service
+   *
+   * @param string $email - The subscriber's email address
+   * @param string $FirstName - The subscriber's first name
+   * @param string $LastName - The subscriber's last name
+   * @return boolean $status - The success status, true being successful
+   */
   public function InsertToNewsletter($Email, $FirstName = "", $LastName = "")
   {
     $status = true;
