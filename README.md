@@ -18,7 +18,7 @@ composer require werkbot/newsletter-module
 ## Setup
 - You will need to run `/dev/build`
 - Place `$NewsletterForm` somewhere in your template.
-- To use the correct styles, include this in your main sass file:
+- To use the default styles, include this in your main sass file:
 
 `@import 'newsletter-module/sass/newsletter';`
 
