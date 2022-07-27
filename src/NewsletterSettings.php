@@ -11,10 +11,12 @@ use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 
-/** */
+/**
+ * A SiteConfig extension that adds global newsletter settings to your site.
+ */
 class NewsletterSettings extends DataExtension
 {
-  /**/
+
   private static $db = [
     'NewsletterAPI' => "Enum('campaignmonitor,mailchimp,constantcontact,activecampaign,redtail,none', 'none')",
     "NewsletterSuccessText" => "HTMLText",
@@ -25,10 +27,9 @@ class NewsletterSettings extends DataExtension
     'ConstantContactListID' => "Text",
     'ActiveCampaignListID' => "Text"
   ];
-  /**/
+
   public function updateCMSFields(FieldList $fields)
   {
-
     $fields->findOrMakeTab('Root.Newsletter', 'Newsletter');
 
     $fields->addFieldToTab(
@@ -113,13 +114,13 @@ class NewsletterSettings extends DataExtension
       $fields->addFieldToTab('Root.Newsletter', $ActiveCampaignListID);
     }
 
-    /**/
+    // Success text
     $htmlField = new HTMLEditorField('NewsletterSuccessText', 'Success/Thankyou Text');
     $htmlField->addExtraClass('stacked');
     $htmlField->setRows(5);
     $fields->addFieldToTab('Root.Newsletter', $htmlField);
 
-    /**/
+    // Error text
     $htmlField = new HTMLEditorField('NewsletterErrorText', 'Error Text');
     $htmlField->addExtraClass('stacked');
     $htmlField->setRows(5);

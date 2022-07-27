@@ -5,20 +5,29 @@ namespace Werkbot\Newsletter;
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 
-/** */
+/**
+ * Newsletter Model Admin. Manages Newsletter Submissions.
+ */
 class NewsletterAdmin extends ModelAdmin
 {
-  /**/
+
   private static $managed_models = [
     NewsletterSubmission::class,
   ];
-  /**/
+
   private static $url_segment = 'newsletter-submissions';
   private static $menu_title = 'Newsletter';
   //private static $menu_icon = '/newsletter-module/images/newsletter-icon.png';
-  /**/
-  public $showImportForm = array();
-  /**/
+
+  public $showImportForm = [];
+
+  /**
+   * Main NewsletterAdmin edit form.
+   *
+   * @param int|null $id
+   * @param \SilverStripe\Forms\FieldList $fields
+   * @return \SilverStripe\Forms\Form A Form object with one tab per {@link \SilverStripe\Forms\GridField\GridField}
+   */
   public function getEditForm($id = null, $fields = null)
   {
     $form = parent::getEditForm($id, $fields);
