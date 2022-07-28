@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1 - 2022-07-28
+## 🎉 New Features
+- Workflow files added ([#23](https://github.com/werkbot/silverstripe-module-newsletter/pull/23) by [tiller1010](https://github.com/tiller1010))
+
+
+
 ## [1.2.0](https://github.com/werkbot/silverstripe-module-newsletter/tree/1.2.0) (2022-04-29)
 
 [Full Changelog](https://github.com/werkbot/silverstripe-module-newsletter/compare/1.1.04...1.2.0)
