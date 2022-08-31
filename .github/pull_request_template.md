@@ -14,4 +14,4 @@
 ### Git Flow
 - **DO NOT** delete "release/\*" or "hotfix/\*" branches after merging a PR. These are used to publish the next release, and they are deleted automatically.
 - "Squash and merge" is good on "feature/\*" into "develop"
-- "Create a merge commit" is good on "release/\*" or "hotfix/\*" into "main"
+- "Create a merge commit" is good on "release/\*" or "hotfix/\*" into "master"
