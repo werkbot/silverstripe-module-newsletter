@@ -3,8 +3,10 @@ tag-template: '$RESOLVED_VERSION'
 categories:
   - title: '🚀 Features'
     labels:
+      - 'feat'
       - 'feature'
       - 'enhancement'
+      - 'improvements'
   - title: '🐛 Bug Fixes'
     labels:
       - 'fix'
@@ -27,4 +29,5 @@ version-resolver:
   default: patch
 template: |
   ## What’s Changed
-  $CHANGES 
+
+  $CHANGES

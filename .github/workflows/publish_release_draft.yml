@@ -1,0 +1,78 @@
+name: Publish draft release when release branch is merged
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - master
+      - support/*
+
+jobs:
+  publish_release:
+    if: ${{ github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get release id
+        id: get_release_id
+        run: |
+          TOKEN=${{ secrets.GITHUB_TOKEN }}
+          RELEASEID=$(curl -H "Accept: application/vnd.github+json" -H "Authorization: token $TOKEN" https://api.github.com/repos/werkbot/silverstripe-module-newsletter/releases)
+          RELEASEID=$(echo "$RELEASEID" | grep \"id\"  | head -n 1 | sed -re "s/[a-z]*//g;s/[-|,|:|'\"]//g;s/\s//g")
+          echo "::set-output name=release_id::$RELEASEID"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish release
+        uses: eregon/publish-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.get_release_id.outputs.release_id }}
+
+      - name: Payload info
+        id: payload_info
+        uses: Dovyski/payload-info-action@master
+        continue-on-error: true
+
+      # Generate changelog, changelog.yml is not triggered by other actions
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.payload_info.outputs.pull_request.base.ref }}
+
+      # Check if this is a support branch
+      - name: Check For support branch
+        id: is_support_branch
+        continue-on-error: true
+        run: |
+          FILTEREDBRANCHNAME=$(git branch | grep "\* support")
+          echo "::set-output name=filtered_branch_name::$FILTEREDBRANCHNAME"
+
+      - name: Generate Changelog
+        id: changelog
+        if: steps.is_support_branch.outputs.filtered_branch_name == ''
+        uses: loopwerk/tag-changelog@v1.0.4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          exclude_types: other,doc,chore
+          config_file: .github/tag-changelog-config.js
+
+      - name: Output Changelog
+        id: output_changelog
+        if: steps.is_support_branch.outputs.filtered_branch_name == ''
+        run: TAGCONTENT="${{ steps.changelog.outputs.changelog }}";CHANGELOG=$(cat CHANGELOG.md);CHANGELOG=$(echo "$CHANGELOG" | sed -e "s/# Changelog//");echo -e "# Changelog\n\n$TAGCONTENT$CHANGELOG" > CHANGELOG.md
+
+      - name: Commit Updated Changelog
+        if: steps.is_support_branch.outputs.filtered_branch_name == ''
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Updated CHANGELOG.md
+          branch: ${{ steps.payload_info.outputs.pull_request.base.ref }}
+
+      # Remove the release or hotfix branch after publishing
+      - name: Remove PR branch
+        uses: dawidd6/action-delete-branch@v3
+        with:
+          github_token: ${{github.token}}
+          branches: ${{ steps.payload_info.outputs.branch }}
