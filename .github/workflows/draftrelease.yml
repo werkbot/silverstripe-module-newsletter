@@ -3,17 +3,94 @@ name: Release Drafter
 on:
   push:
     branches:
-      - master
+      - release/*
+      - hotfix/*
 
 permissions:
   contents: read
 
 jobs:
   update_release_draft:
-    permissions: write-all
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
-      - name: Draft Release
-        uses: release-drafter/release-drafter@v5
+      - name: Checkout
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+
+      # NEW RELEASES
+      # Check if this is a release branch
+      - name: Check For release branch
+        id: is_release_branch
+        continue-on-error: true
+        run: |
+          FILTEREDBRANCHNAME=$(git branch | grep "\* release")
+          echo "::set-output name=filtered_branch_name::$FILTEREDBRANCHNAME"
+
+      # Get the release tag
+      - name: Get release Tag
+        id: get_release_tag
+        if: steps.is_release_branch.outputs.filtered_branch_name != ''
+        run: |
+          RELEASETAG=$(git branch | grep \* | sed -re "s/release\///;s/\*//;s/\s*//g")
+          echo "::set-output name=release_tag::$RELEASETAG"
+
+      # Draft Release with release branch
+      - name: Draft Release with release branch
+        id: update_release_draft_with_release_branch
+        if: steps.is_release_branch.outputs.filtered_branch_name != ''
+        uses: tiller1010/release-drafter@master
+        with:
+          tag: ${{ steps.get_release_tag.outputs.release_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+      # SUPPORT HOTFIXES
+      # Check if this is a hotfix branch
+      - name: Check For hotfix branch
+        id: is_hotfix_branch
+        if: steps.is_release_branch.outputs.filtered_branch_name == ''
+        continue-on-error: true
+        run: |
+          FILTEREDBRANCHNAME=$(git branch | grep "\* hotfix")
+          echo "::set-output name=filtered_branch_name::$FILTEREDBRANCHNAME"
+
+      # Get the hotfix tag
+      - name: Get hotfix Tag
+        id: get_hotfix_tag
+        if: steps.is_hotfix_branch.outputs.filtered_branch_name != ''
+        run: |
+          RELEASETAG=$(git branch | grep \* | sed -re "s/hotfix\///;s/\*//;s/\s*//g")
+          echo "::set-output name=release_tag::$RELEASETAG"
+
+      # Draft Release with hotfix branch
+      - name: Draft Release with hotfix branch
+        id: update_release_draft_with_hotfix_branch
+        if: steps.is_hotfix_branch.outputs.filtered_branch_name != ''
+        uses: tiller1010/release-drafter@master
+        with:
+          tag: ${{ steps.get_hotfix_tag.outputs.release_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+      # RELEASE BRANCHING (NOT GIT-FLOW)
+      # Get the last tag created on this branch
+      - name: Get Last Tag
+        id: last_tag
+        run: |
+          LASTTAG=$(git describe --tags | sed -re "s/-.+//")
+          echo "::set-output name=last_tag_on_branch::$LASTTAG"
+
+      # Draft Release with Previous Tag
+      - name: Draft Release with Previous Tag
+        id: update_release_draft
+        if: steps.is_release_branch.outputs.filtered_branch_name == '' && steps.is_hotfix_branch.outputs.filtered_branch_name == ''
+        uses: tiller1010/release-drafter@master
+        with:
+          last_tag: ${{ steps.last_tag.outputs.last_tag_on_branch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
