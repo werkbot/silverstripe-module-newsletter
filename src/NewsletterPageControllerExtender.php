@@ -105,13 +105,21 @@ class NewsletterPageControllerExtender extends DataExtension
 
     if ($status) {
       //SHOW SUCCESS PAGE
-      $resultdata["NewsletterMessage"] = $this->owner->SiteConfig->NewsletterSuccessText;
+      if ($this->owner->SiteConfig->NewsletterSuccessText) {
+        $resultdata["NewsletterMessage"] = $this->owner->SiteConfig->NewsletterSuccessText;
+      } else {
+        $resultdata["NewsletterMessage"] = 'Thank you for subscribing!';
+      }
       $resultdata["MessageType"] = "good";
 
       return $this->owner->customise($resultdata)->renderWith(array($this->owner->ClassName, 'Page', 'NewsletterFormSubmission'));
     } else {
       //SHOW ERROR PAGE
-      $resultdata["NewsletterMessage"] = $this->owner->SiteConfig->NewsletterErrorText;
+      if ($this->owner->SiteConfig->NewsletterErrorText) {
+        $resultdata["NewsletterMessage"] = $this->owner->SiteConfig->NewsletterErrorText;
+      } else {
+        $resultdata["NewsletterMessage"] = 'There was an issue processing your request.';
+      }
       $resultdata["MessageType"] = "bad";
 
       return $this->owner->customise($resultdata)->renderWith(array($this->owner->ClassName, 'Page', 'NewsletterFormSubmission'));
