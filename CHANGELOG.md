@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.2 - 2022-10-12
+## 🎉 New Features
+- Workflow files added ([#29](https://github.com/werkbot/silverstripe-module-newsletter/pull/29) by [tiller1010](https://github.com/tiller1010)) (#31)
+
+## 🔨 Improvements
+- Added default newsletter signup messages ([#30](https://github.com/werkbot/silverstripe-module-newsletter/pull/30) by [tiller1010](https://github.com/tiller1010))
+
+
+
 ## 2.0.1 - 2022-09-01
 ## 🎉 New Features
 - Workflow files added ([#29](https://github.com/werkbot/silverstripe-module-newsletter/pull/29) by [tiller1010](https://github.com/tiller1010))
