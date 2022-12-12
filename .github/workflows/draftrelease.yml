@@ -27,7 +27,7 @@ jobs:
         continue-on-error: true
         run: |
           FILTEREDBRANCHNAME=$(git branch | grep "\* release")
-          echo "::set-output name=filtered_branch_name::$FILTEREDBRANCHNAME"
+          echo "filtered_branch_name=$FILTEREDBRANCHNAME" >> $GITHUB_OUTPUT
 
       # Get the release tag
       - name: Get release Tag
@@ -35,7 +35,7 @@ jobs:
         if: steps.is_release_branch.outputs.filtered_branch_name != ''
         run: |
           RELEASETAG=$(git branch | grep \* | sed -re "s/release\///;s/\*//;s/\s*//g")
-          echo "::set-output name=release_tag::$RELEASETAG"
+          echo "release_tag=$RELEASETAG" >> $GITHUB_OUTPUT
 
       # Draft Release with release branch
       - name: Draft Release with release branch
@@ -56,7 +56,7 @@ jobs:
         continue-on-error: true
         run: |
           FILTEREDBRANCHNAME=$(git branch | grep "\* hotfix")
-          echo "::set-output name=filtered_branch_name::$FILTEREDBRANCHNAME"
+          echo "filtered_branch_name=$FILTEREDBRANCHNAME" >> $GITHUB_OUTPUT
 
       # Get the hotfix tag
       - name: Get hotfix Tag
@@ -64,7 +64,15 @@ jobs:
         if: steps.is_hotfix_branch.outputs.filtered_branch_name != ''
         run: |
           RELEASETAG=$(git branch | grep \* | sed -re "s/hotfix\///;s/\*//;s/\s*//g")
-          echo "::set-output name=release_tag::$RELEASETAG"
+          echo "release_tag=$RELEASETAG" >> $GITHUB_OUTPUT
+
+      # Get the last tag created on this branch
+      - name: Get Last Tag
+        id: last_tag
+        if: steps.is_hotfix_branch.outputs.filtered_branch_name != ''
+        run: |
+          LASTTAG=$(git describe --tags | sed -re "s/-.+//")
+          echo "last_tag_on_branch=$LASTTAG" >> $GITHUB_OUTPUT
 
       # Draft Release with hotfix branch
       - name: Draft Release with hotfix branch
@@ -73,24 +81,6 @@ jobs:
         uses: tiller1010/release-drafter@master
         with:
           tag: ${{ steps.get_hotfix_tag.outputs.release_tag }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-      # RELEASE BRANCHING (NOT GIT-FLOW)
-      # Get the last tag created on this branch
-      - name: Get Last Tag
-        id: last_tag
-        run: |
-          LASTTAG=$(git describe --tags | sed -re "s/-.+//")
-          echo "::set-output name=last_tag_on_branch::$LASTTAG"
-
-      # Draft Release with Previous Tag
-      - name: Draft Release with Previous Tag
-        id: update_release_draft
-        if: steps.is_release_branch.outputs.filtered_branch_name == '' && steps.is_hotfix_branch.outputs.filtered_branch_name == ''
-        uses: tiller1010/release-drafter@master
-        with:
           last_tag: ${{ steps.last_tag.outputs.last_tag_on_branch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
