@@ -13,15 +13,66 @@ jobs:
     if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     steps:
+
+      - name: Checkout
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+
       - name: Get release id
         id: get_release_id
         run: |
           TOKEN=${{ secrets.GITHUB_TOKEN }}
           RELEASEID=$(curl -H "Accept: application/vnd.github+json" -H "Authorization: token $TOKEN" https://api.github.com/repos/werkbot/silverstripe-module-newsletter/releases)
           RELEASEID=$(echo "$RELEASEID" | grep \"id\"  | head -n 1 | sed -re "s/[a-z]*//g;s/[-|,|:|'\"]//g;s/\s//g")
-          echo "::set-output name=release_id::$RELEASEID"
+          echo "release_id=$RELEASEID" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Payload info
+        id: payload_info
+        uses: Dovyski/payload-info-action@master
+        continue-on-error: true
+
+
+      # START SUPPORT RELEASE RE-DRAFT
+      - name: Check if releasing for a support branch
+        id: is_support_branch
+        continue-on-error: true
+        run: |
+          FILTEREDBRANCHNAME=$(git branch | grep "\* support")
+          echo "filtered_branch_name=$FILTEREDBRANCHNAME" >> $GITHUB_OUTPUT
+
+      - name: Get hotfix Tag from branch name
+        id: get_hotfix_tag
+        if: steps.is_support_branch.outputs.filtered_branch_name != ''
+        run: |
+          HOTFIXBRANCH=${{ steps.payload_info.outputs.branch }}
+          RELEASETAG=$(echo "$HOTFIXBRANCH" | grep \* | sed -re "s/hotfix\///;s/\*//;s/\s*//g")
+          echo "release_tag=$RELEASETAG" >> $GITHUB_OUTPUT
+
+      - name: Get Last Tag created on this branch
+        id: last_tag
+        if: steps.is_support_branch.outputs.filtered_branch_name != ''
+        run: |
+          LASTTAG=$(git describe --tags | sed -re "s/-.+//")
+          echo "last_tag_on_branch=$LASTTAG" >> $GITHUB_OUTPUT
+
+      # Re-Draft Release with hotfix tag
+      # "release-drafter" works by checking the changes of merged pull requests.
+      # For support branches, there is only one merged hotfix PR, which is only now available,
+      # so we need to re-draft the release with the recently merged PR for release notes.
+      - name: Draft Release with hotfix tag
+        id: update_release_draft_with_hotfix_branch
+        if: steps.is_support_branch.outputs.filtered_branch_name != ''
+        uses: tiller1010/release-drafter@master
+        with:
+          tag: ${{ steps.get_hotfix_tag.outputs.release_tag }}
+          last_tag: ${{ steps.last_tag.outputs.last_tag_on_branch }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # END SUPPORT RELEASE RE-DRAFT
+
 
       - name: Publish release
         uses: eregon/publish-release@v1
@@ -30,25 +81,8 @@ jobs:
         with:
           release_id: ${{ steps.get_release_id.outputs.release_id }}
 
-      - name: Payload info
-        id: payload_info
-        uses: Dovyski/payload-info-action@master
-        continue-on-error: true
 
-      # Generate changelog, changelog.yml is not triggered by other actions
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ steps.payload_info.outputs.pull_request.base.ref }}
-
-      # Check if this is a support branch
-      - name: Check For support branch
-        id: is_support_branch
-        continue-on-error: true
-        run: |
-          FILTEREDBRANCHNAME=$(git branch | grep "\* support")
-          echo "::set-output name=filtered_branch_name::$FILTEREDBRANCHNAME"
-
+      # START CHANGELOG PORTION
       - name: Generate Changelog
         id: changelog
         if: steps.is_support_branch.outputs.filtered_branch_name == ''
@@ -63,16 +97,45 @@ jobs:
         if: steps.is_support_branch.outputs.filtered_branch_name == ''
         run: TAGCONTENT="${{ steps.changelog.outputs.changelog }}";CHANGELOG=$(cat CHANGELOG.md);CHANGELOG=$(echo "$CHANGELOG" | sed -e "s/# Changelog//");echo -e "# Changelog\n\n$TAGCONTENT$CHANGELOG" > CHANGELOG.md
 
-      - name: Commit Updated Changelog
+      - name: Create Pull Request
+        id: create_pr
         if: steps.is_support_branch.outputs.filtered_branch_name == ''
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: peter-evans/create-pull-request@v4
         with:
-          commit_message: Updated CHANGELOG.md
-          branch: ${{ steps.payload_info.outputs.pull_request.base.ref }}
+          title: Auto-Update CHANGELOG.md
+          commit-message: Updated CHANGELOG.md
+          labels: automerge
+
+      - name: Approve PR
+        if: steps.is_support_branch.outputs.filtered_branch_name == ''
+        uses: hmarr/auto-approve-action@v2
+        with:
+          review-message: Auto approved automated PR
+          pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
+          github-token: ${{ secrets.SOME_USERS_PAT }}
+
+      - name: Auto merge
+        if: steps.is_support_branch.outputs.filtered_branch_name == ''
+        uses: pascalgn/automerge-action@v0.15.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PULL_REQUEST: ${{ steps.create_pr.outputs.pull-request-number }}
+          MERGE_DELETE_BRANCH: true
+      # END CHANGELOG PORTION
+
+
+      # Merge support changes into develop so they can be included in the next release
+      - name: Merge master/support -> develop
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          target_branch: develop
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          message: Merged master/support into develop
 
       # Remove the release or hotfix branch after publishing
       - name: Remove PR branch
         uses: dawidd6/action-delete-branch@v3
         with:
-          github_token: ${{github.token}}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branches: ${{ steps.payload_info.outputs.branch }}
