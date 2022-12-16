@@ -22,6 +22,10 @@ class NewsletterPageExtender extends DataExtension
     "NewsletterShowHide" => true,
   ];
 
+  private static $casting = [
+    'NewsletterShortcode' => 'HTMLText'
+  ];
+
   public function populateDefaults()
   {
     $this->owner->NewsletterShowHide = true;
