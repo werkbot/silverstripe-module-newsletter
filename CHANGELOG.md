@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.3 - 2022-12-12
+## 🔨 Improvements
+- support branch fixes, removed set-output
+
+
+
 ## 2.0.2 - 2022-10-12
 ## 🎉 New Features
 - Workflow files added ([#29](https://github.com/werkbot/silverstripe-module-newsletter/pull/29) by [tiller1010](https://github.com/tiller1010)) (#31)
