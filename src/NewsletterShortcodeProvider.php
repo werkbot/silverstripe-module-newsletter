@@ -7,7 +7,7 @@ use SilverStripe\View\Parsers\ShortcodeParser;
 
 class NewsletterShortcodeProvider extends ShortcodeParser{
   /*
-    [newsletter,class="form newsletter-form"]
+    [newsletterform,class="form newsletter-form"]
   */
   public static function handle_shortcode($args, $content, $parser, $shortcode, $extra = array()){
     $PopupContent = '';
@@ -16,8 +16,8 @@ class NewsletterShortcodeProvider extends ShortcodeParser{
       $PopupContent = $parser->parse($content);
     }
     // If class add wrapper div
-    if (isset($arguments['class'])){
-      $PopupContent .= '<div class="'.$arguments['class'].'">';
+    if (isset($args['class'])){
+      $PopupContent .= '<div class="'.$args['class'].'">';
     }
     // Get Form HTML
     $PopupContent .= Controller::curr()->NewsletterForm()
@@ -25,7 +25,7 @@ class NewsletterShortcodeProvider extends ShortcodeParser{
       ->setFormAction(Controller::join_links(Controller::curr()->owner->Link(), 'NewsletterForm'))
       ->forTemplate();
     // End wrapper div
-    if (isset($arguments['class'])){
+    if (isset($args['class'])){
       $PopupContent .= '</div>';
     }
     // Return full html
