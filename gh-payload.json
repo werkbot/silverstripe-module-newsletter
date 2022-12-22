@@ -1,6 +1,6 @@
 {
   "action": "closed",
-  "number": 33,
+  "number": 37,
   "organization": {
     "avatar_url": "https://avatars.githubusercontent.com/u/24702501?v=4",
     "description": "",
@@ -18,32 +18,32 @@
   "pull_request": {
     "_links": {
       "comments": {
-        "href": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/issues/33/comments"
+        "href": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/issues/37/comments"
       },
       "commits": {
-        "href": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls/33/commits"
+        "href": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls/37/commits"
       },
       "html": {
-        "href": "https://github.com/werkbot/silverstripe-module-newsletter/pull/33"
+        "href": "https://github.com/werkbot/silverstripe-module-newsletter/pull/37"
       },
       "issue": {
-        "href": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/issues/33"
+        "href": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/issues/37"
       },
       "review_comment": {
         "href": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls/comments{/number}"
       },
       "review_comments": {
-        "href": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls/33/comments"
+        "href": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls/37/comments"
       },
       "self": {
-        "href": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls/33"
+        "href": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls/37"
       },
       "statuses": {
-        "href": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/statuses/378970e8d2582028c500b42e2b535591a2536097"
+        "href": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/statuses/0efb43e8ebe6fcf94dcd3cfa23c420d2de210a36"
       }
     },
     "active_lock_reason": null,
-    "additions": 95,
+    "additions": 4,
     "assignee": null,
     "assignees": [],
     "author_association": "CONTRIBUTOR",
@@ -144,9 +144,9 @@
         },
         "private": false,
         "pulls_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls{/number}",
-        "pushed_at": "2022-12-12T16:27:56Z",
+        "pushed_at": "2022-12-22T14:38:33Z",
         "releases_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/releases{/id}",
-        "size": 88,
+        "size": 99,
         "squash_merge_commit_message": "COMMIT_MESSAGES",
         "squash_merge_commit_title": "COMMIT_OR_PR_TITLE",
         "ssh_url": "git@github.com:werkbot/silverstripe-module-newsletter.git",
@@ -175,7 +175,7 @@
         "watchers_count": 0,
         "web_commit_signoff_required": false
       },
-      "sha": "76921767dc8c26318c31db8a0345c363736a5212",
+      "sha": "f45b1255b9d089afc76b4408139f8d315c76729c",
       "user": {
         "avatar_url": "https://avatars.githubusercontent.com/u/24702501?v=4",
         "events_url": "https://api.github.com/users/werkbot/events{/privacy}",
@@ -197,20 +197,20 @@
         "url": "https://api.github.com/users/werkbot"
       }
     },
-    "body": "https://werkbotstudios.teamwork.com/#/tasks/30547131\r\nhttps://werkbotstudios.teamwork.com/#/tasks/30592236\r\n\r\n### Summary\r\n- Adds improved support branch workflow files\r\n  - Removed unused files\r\n  - Removed changelog update attempts made by support branch changes\r\n  - Re-drafts support branch releases right before publishing, so we can have accurate support release notes\r\n- Removes deprecated \"set-output\" calls\r\n\r\n### Testing Steps\r\n- [ ] confirm the release draft still looks good\r\n\r\n### Concerns\r\n- You could test this in a fork like this https://github.com/tiller1010/silverstripe-module-search/pull/52. Notice how the [release notes](https://github.com/tiller1010/silverstripe-module-search/releases/tag/1.1.7) included the right commit (previously support releases would include irrelevant commits on master)\r\n\r\n### Git Flow\r\n- **DO NOT** delete \"release/\\*\" or \"hotfix/\\*\" branches after merging a PR. These are used to publish the next release, and they are deleted automatically.\r\n- \"Squash and merge\" is good on \"feature/\\*\" into \"develop\"\r\n- \"Create a merge commit\" is good on \"release/\\*\" or \"hotfix/\\*\" into \"master\"\r\n",
-    "changed_files": 4,
-    "closed_at": "2022-12-12T16:27:56Z",
+    "body": "### Summary\r\n> Fixed argument variable check\r\n\r\n[Click for ticket](https://werkbotstudios.teamwork.com/#/tasks/30675989)\r\n\r\n### Testing Steps\r\n- [ ] Test the shortcode with a class and verify the wrapper div is created with the classes\r\n\r\n### Git Flow\r\n- **DO NOT** delete \"release/\\*\" or \"hotfix/\\*\" branches after merging a PR. These are used to publish the next release, and they are deleted automatically.\r\n- \"Squash and merge\" is good on \"feature/\\*\" into \"develop\"\r\n- \"Create a merge commit\" is good on \"release/\\*\" or \"hotfix/\\*\" into \"master\"\r\n",
+    "changed_files": 1,
+    "closed_at": "2022-12-22T14:38:33Z",
     "comments": 0,
-    "comments_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/issues/33/comments",
-    "commits": 1,
-    "commits_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls/33/commits",
-    "created_at": "2022-12-07T17:56:52Z",
-    "deletions": 130,
-    "diff_url": "https://github.com/werkbot/silverstripe-module-newsletter/pull/33.diff",
+    "comments_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/issues/37/comments",
+    "commits": 5,
+    "commits_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls/37/commits",
+    "created_at": "2022-12-22T12:09:51Z",
+    "deletions": 4,
+    "diff_url": "https://github.com/werkbot/silverstripe-module-newsletter/pull/37.diff",
     "draft": false,
     "head": {
-      "label": "werkbot:hotfix/2.0.3",
-      "ref": "hotfix/2.0.3",
+      "label": "werkbot:hotfix/2.1.1",
+      "ref": "hotfix/2.1.1",
       "repo": {
         "allow_auto_merge": false,
         "allow_forking": true,
@@ -304,9 +304,9 @@
         },
         "private": false,
         "pulls_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls{/number}",
-        "pushed_at": "2022-12-12T16:27:56Z",
+        "pushed_at": "2022-12-22T14:38:33Z",
         "releases_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/releases{/id}",
-        "size": 88,
+        "size": 99,
         "squash_merge_commit_message": "COMMIT_MESSAGES",
         "squash_merge_commit_title": "COMMIT_OR_PR_TITLE",
         "ssh_url": "git@github.com:werkbot/silverstripe-module-newsletter.git",
@@ -335,7 +335,7 @@
         "watchers_count": 0,
         "web_commit_signoff_required": false
       },
-      "sha": "378970e8d2582028c500b42e2b535591a2536097",
+      "sha": "0efb43e8ebe6fcf94dcd3cfa23c420d2de210a36",
       "user": {
         "avatar_url": "https://avatars.githubusercontent.com/u/24702501?v=4",
         "events_url": "https://api.github.com/users/werkbot/events{/privacy}",
@@ -357,9 +357,9 @@
         "url": "https://api.github.com/users/werkbot"
       }
     },
-    "html_url": "https://github.com/werkbot/silverstripe-module-newsletter/pull/33",
-    "id": 1152108608,
-    "issue_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/issues/33",
+    "html_url": "https://github.com/werkbot/silverstripe-module-newsletter/pull/37",
+    "id": 1174994500,
+    "issue_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/issues/37",
     "labels": [
       {
         "color": "43C7E6",
@@ -373,65 +373,65 @@
     ],
     "locked": false,
     "maintainer_can_modify": false,
-    "merge_commit_sha": "7b152902e68eb7718748e83685f71cbb4c72b533",
+    "merge_commit_sha": "0a4e2b6f5d03b682d8b9818cf67f2b2605087db5",
     "mergeable": null,
     "mergeable_state": "unknown",
     "merged": true,
-    "merged_at": "2022-12-12T16:27:56Z",
+    "merged_at": "2022-12-22T14:38:33Z",
     "merged_by": {
-      "avatar_url": "https://avatars.githubusercontent.com/u/42498429?v=4",
-      "events_url": "https://api.github.com/users/tiller1010/events{/privacy}",
-      "followers_url": "https://api.github.com/users/tiller1010/followers",
-      "following_url": "https://api.github.com/users/tiller1010/following{/other_user}",
-      "gists_url": "https://api.github.com/users/tiller1010/gists{/gist_id}",
+      "avatar_url": "https://avatars.githubusercontent.com/u/638532?v=4",
+      "events_url": "https://api.github.com/users/SnowB1/events{/privacy}",
+      "followers_url": "https://api.github.com/users/SnowB1/followers",
+      "following_url": "https://api.github.com/users/SnowB1/following{/other_user}",
+      "gists_url": "https://api.github.com/users/SnowB1/gists{/gist_id}",
       "gravatar_id": "",
-      "html_url": "https://github.com/tiller1010",
-      "id": 42498429,
-      "login": "tiller1010",
-      "node_id": "MDQ6VXNlcjQyNDk4NDI5",
-      "organizations_url": "https://api.github.com/users/tiller1010/orgs",
-      "received_events_url": "https://api.github.com/users/tiller1010/received_events",
-      "repos_url": "https://api.github.com/users/tiller1010/repos",
+      "html_url": "https://github.com/SnowB1",
+      "id": 638532,
+      "login": "SnowB1",
+      "node_id": "MDQ6VXNlcjYzODUzMg==",
+      "organizations_url": "https://api.github.com/users/SnowB1/orgs",
+      "received_events_url": "https://api.github.com/users/SnowB1/received_events",
+      "repos_url": "https://api.github.com/users/SnowB1/repos",
       "site_admin": false,
-      "starred_url": "https://api.github.com/users/tiller1010/starred{/owner}{/repo}",
-      "subscriptions_url": "https://api.github.com/users/tiller1010/subscriptions",
+      "starred_url": "https://api.github.com/users/SnowB1/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/SnowB1/subscriptions",
       "type": "User",
-      "url": "https://api.github.com/users/tiller1010"
+      "url": "https://api.github.com/users/SnowB1"
     },
     "milestone": null,
-    "node_id": "PR_kwDOB6Bdis5Eq8hA",
-    "number": 33,
-    "patch_url": "https://github.com/werkbot/silverstripe-module-newsletter/pull/33.patch",
+    "node_id": "PR_kwDOB6Bdis5GCP5E",
+    "number": 37,
+    "patch_url": "https://github.com/werkbot/silverstripe-module-newsletter/pull/37.patch",
     "rebaseable": null,
     "requested_reviewers": [],
     "requested_teams": [],
     "review_comment_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls/comments{/number}",
     "review_comments": 0,
-    "review_comments_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls/33/comments",
+    "review_comments_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls/37/comments",
     "state": "closed",
-    "statuses_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/statuses/378970e8d2582028c500b42e2b535591a2536097",
-    "title": "improvements: support branch fixes, removed set-output",
-    "updated_at": "2022-12-12T16:27:56Z",
-    "url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls/33",
+    "statuses_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/statuses/0efb43e8ebe6fcf94dcd3cfa23c420d2de210a36",
+    "title": "Fixed Variable",
+    "updated_at": "2022-12-22T14:38:33Z",
+    "url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls/37",
     "user": {
-      "avatar_url": "https://avatars.githubusercontent.com/u/42498429?v=4",
-      "events_url": "https://api.github.com/users/tiller1010/events{/privacy}",
-      "followers_url": "https://api.github.com/users/tiller1010/followers",
-      "following_url": "https://api.github.com/users/tiller1010/following{/other_user}",
-      "gists_url": "https://api.github.com/users/tiller1010/gists{/gist_id}",
+      "avatar_url": "https://avatars.githubusercontent.com/u/638532?v=4",
+      "events_url": "https://api.github.com/users/SnowB1/events{/privacy}",
+      "followers_url": "https://api.github.com/users/SnowB1/followers",
+      "following_url": "https://api.github.com/users/SnowB1/following{/other_user}",
+      "gists_url": "https://api.github.com/users/SnowB1/gists{/gist_id}",
       "gravatar_id": "",
-      "html_url": "https://github.com/tiller1010",
-      "id": 42498429,
-      "login": "tiller1010",
-      "node_id": "MDQ6VXNlcjQyNDk4NDI5",
-      "organizations_url": "https://api.github.com/users/tiller1010/orgs",
-      "received_events_url": "https://api.github.com/users/tiller1010/received_events",
-      "repos_url": "https://api.github.com/users/tiller1010/repos",
+      "html_url": "https://github.com/SnowB1",
+      "id": 638532,
+      "login": "SnowB1",
+      "node_id": "MDQ6VXNlcjYzODUzMg==",
+      "organizations_url": "https://api.github.com/users/SnowB1/orgs",
+      "received_events_url": "https://api.github.com/users/SnowB1/received_events",
+      "repos_url": "https://api.github.com/users/SnowB1/repos",
       "site_admin": false,
-      "starred_url": "https://api.github.com/users/tiller1010/starred{/owner}{/repo}",
-      "subscriptions_url": "https://api.github.com/users/tiller1010/subscriptions",
+      "starred_url": "https://api.github.com/users/SnowB1/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/SnowB1/subscriptions",
       "type": "User",
-      "url": "https://api.github.com/users/tiller1010"
+      "url": "https://api.github.com/users/SnowB1"
     }
   },
   "repository": {
@@ -519,9 +519,9 @@
     },
     "private": false,
     "pulls_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/pulls{/number}",
-    "pushed_at": "2022-12-12T16:27:56Z",
+    "pushed_at": "2022-12-22T14:38:33Z",
     "releases_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/releases{/id}",
-    "size": 88,
+    "size": 99,
     "ssh_url": "git@github.com:werkbot/silverstripe-module-newsletter.git",
     "stargazers_count": 0,
     "stargazers_url": "https://api.github.com/repos/werkbot/silverstripe-module-newsletter/stargazers",
@@ -548,23 +548,23 @@
     "web_commit_signoff_required": false
   },
   "sender": {
-    "avatar_url": "https://avatars.githubusercontent.com/u/42498429?v=4",
-    "events_url": "https://api.github.com/users/tiller1010/events{/privacy}",
-    "followers_url": "https://api.github.com/users/tiller1010/followers",
-    "following_url": "https://api.github.com/users/tiller1010/following{/other_user}",
-    "gists_url": "https://api.github.com/users/tiller1010/gists{/gist_id}",
+    "avatar_url": "https://avatars.githubusercontent.com/u/638532?v=4",
+    "events_url": "https://api.github.com/users/SnowB1/events{/privacy}",
+    "followers_url": "https://api.github.com/users/SnowB1/followers",
+    "following_url": "https://api.github.com/users/SnowB1/following{/other_user}",
+    "gists_url": "https://api.github.com/users/SnowB1/gists{/gist_id}",
     "gravatar_id": "",
-    "html_url": "https://github.com/tiller1010",
-    "id": 42498429,
-    "login": "tiller1010",
-    "node_id": "MDQ6VXNlcjQyNDk4NDI5",
-    "organizations_url": "https://api.github.com/users/tiller1010/orgs",
-    "received_events_url": "https://api.github.com/users/tiller1010/received_events",
-    "repos_url": "https://api.github.com/users/tiller1010/repos",
+    "html_url": "https://github.com/SnowB1",
+    "id": 638532,
+    "login": "SnowB1",
+    "node_id": "MDQ6VXNlcjYzODUzMg==",
+    "organizations_url": "https://api.github.com/users/SnowB1/orgs",
+    "received_events_url": "https://api.github.com/users/SnowB1/received_events",
+    "repos_url": "https://api.github.com/users/SnowB1/repos",
     "site_admin": false,
-    "starred_url": "https://api.github.com/users/tiller1010/starred{/owner}{/repo}",
-    "subscriptions_url": "https://api.github.com/users/tiller1010/subscriptions",
+    "starred_url": "https://api.github.com/users/SnowB1/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/SnowB1/subscriptions",
     "type": "User",
-    "url": "https://api.github.com/users/tiller1010"
+    "url": "https://api.github.com/users/SnowB1"
   }
 }

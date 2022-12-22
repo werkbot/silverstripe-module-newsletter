@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.1 - 2022-12-22
+
+
+
+
 ## 2.0.3 - 2022-12-12
 ## 🔨 Improvements
 - support branch fixes, removed set-output
