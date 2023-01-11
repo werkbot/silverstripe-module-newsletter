@@ -65,9 +65,10 @@ class MailchimpNewsletterTest extends FunctionalTest
         }
       } catch (\GuzzleHttp\Exception\ClientException $e) {
         $this->assertExceptionFailure($e);
+        return;
       }
     } else {
-      $this->markTestSkipped('api key not set in the env.');
+      $this->markTestSkipped('API credentials not set in the env.');
     }
   }
 
@@ -82,7 +83,7 @@ class MailchimpNewsletterTest extends FunctionalTest
       $response = $mailchimp->ping->getWithHttpInfo();
       $this->assertEquals("Everything's Chimpy!", $response->health_status);
     } else {
-      $this->markTestSkipped('api key not set in the env.');
+      $this->markTestSkipped('API credentials not set in the env.');
     }
   }
 
