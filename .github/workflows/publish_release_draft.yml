@@ -5,7 +5,7 @@ on:
     types:
       - closed
     branches:
-      - master
+      - main
       - support/*
 
 jobs:
@@ -19,11 +19,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Get repository name
+        id: repo-name
+        uses: tiller1010/get-repo-name-action@master
+        with:
+          with-owner: 'true'
+
       - name: Get release id
         id: get_release_id
         run: |
-          TOKEN=${{ secrets.GITHUB_TOKEN }}
-          RELEASEID=$(curl -H "Accept: application/vnd.github+json" -H "Authorization: token $TOKEN" https://api.github.com/repos/werkbot/silverstripe-module-newsletter/releases)
+          TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          REPO="${{ steps.repo-name.outputs.repository-name }}"
+          RELEASEID=$(curl -H "Accept: application/vnd.github+json" -H "Authorization: token $TOKEN" https://api.github.com/repos/$REPO/releases)
           RELEASEID=$(echo "$RELEASEID" | grep \"id\"  | head -n 1 | sed -re "s/[a-z]*//g;s/[-|,|:|'\"]//g;s/\s//g")
           echo "release_id=$RELEASEID" >> $GITHUB_OUTPUT
         env:
@@ -31,47 +38,48 @@ jobs:
 
       - name: Payload info
         id: payload_info
-        uses: Dovyski/payload-info-action@master
+        uses: tiller1010/payload-info-action@master
         continue-on-error: true
 
 
-      # START SUPPORT RELEASE RE-DRAFT
-      - name: Check if releasing for a support branch
-        id: is_support_branch
+      # START HOTFIX RELEASE RE-DRAFT
+      - name: Check if releasing a hotfix
+        id: is_hotfix_branch
         continue-on-error: true
         run: |
-          FILTEREDBRANCHNAME=$(git branch | grep "\* support")
-          echo "filtered_branch_name=$FILTEREDBRANCHNAME" >> $GITHUB_OUTPUT
+          PRBRANCH="${{ steps.payload_info.outputs.branch }}"
+          FILTEREDBRANCHNAME=$(echo "$PRBRANCH" | grep "hotfix")
+          echo "filtered_pr_branch_name=$FILTEREDBRANCHNAME" >> $GITHUB_OUTPUT
 
       - name: Get hotfix Tag from branch name
         id: get_hotfix_tag
-        if: steps.is_support_branch.outputs.filtered_branch_name != ''
+        if: steps.is_hotfix_branch.outputs.filtered_pr_branch_name != ''
         run: |
-          HOTFIXBRANCH=${{ steps.payload_info.outputs.branch }}
-          RELEASETAG=$(echo "$HOTFIXBRANCH" | grep \* | sed -re "s/hotfix\///;s/\*//;s/\s*//g")
+          HOTFIXBRANCH="${{ steps.payload_info.outputs.branch }}"
+          RELEASETAG=$(echo "$HOTFIXBRANCH" | sed -re "s/hotfix\///;s/\*//;s/\s*//g")
           echo "release_tag=$RELEASETAG" >> $GITHUB_OUTPUT
 
       - name: Get Last Tag created on this branch
         id: last_tag
-        if: steps.is_support_branch.outputs.filtered_branch_name != ''
+        if: steps.is_hotfix_branch.outputs.filtered_pr_branch_name != ''
         run: |
           LASTTAG=$(git describe --tags | sed -re "s/-.+//")
           echo "last_tag_on_branch=$LASTTAG" >> $GITHUB_OUTPUT
 
       # Re-Draft Release with hotfix tag
       # "release-drafter" works by checking the changes of merged pull requests.
-      # For support branches, there is only one merged hotfix PR, which is only now available,
+      # For support or main branch hotfixes, there is only one merged hotfix PR, which is only now available,
       # so we need to re-draft the release with the recently merged PR for release notes.
       - name: Draft Release with hotfix tag
         id: update_release_draft_with_hotfix_branch
-        if: steps.is_support_branch.outputs.filtered_branch_name != ''
+        if: steps.is_hotfix_branch.outputs.filtered_pr_branch_name != ''
         uses: tiller1010/release-drafter@master
         with:
           tag: ${{ steps.get_hotfix_tag.outputs.release_tag }}
           last_tag: ${{ steps.last_tag.outputs.last_tag_on_branch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # END SUPPORT RELEASE RE-DRAFT
+      # END HOTFIX RELEASE RE-DRAFT
 
 
       - name: Publish release
@@ -83,10 +91,17 @@ jobs:
 
 
       # START CHANGELOG PORTION
+      - name: Check if releasing for a support branch
+        id: is_support_branch
+        continue-on-error: true
+        run: |
+          FILTEREDBRANCHNAME=$(git branch | grep "\* support")
+          echo "filtered_branch_name=$FILTEREDBRANCHNAME" >> $GITHUB_OUTPUT
+
       - name: Generate Changelog
         id: changelog
         if: steps.is_support_branch.outputs.filtered_branch_name == ''
-        uses: loopwerk/tag-changelog@v1.0.4
+        uses: tiller1010/tag-changelog@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           exclude_types: other,doc,chore
@@ -108,7 +123,7 @@ jobs:
 
       - name: Approve PR
         if: steps.is_support_branch.outputs.filtered_branch_name == ''
-        uses: hmarr/auto-approve-action@v2
+        uses: hmarr/auto-approve-action@v3
         with:
           review-message: Auto approved automated PR
           pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
@@ -116,22 +131,40 @@ jobs:
 
       - name: Auto merge
         if: steps.is_support_branch.outputs.filtered_branch_name == ''
-        uses: pascalgn/automerge-action@v0.15.3
+        uses: pascalgn/automerge-action@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PULL_REQUEST: ${{ steps.create_pr.outputs.pull-request-number }}
           MERGE_DELETE_BRANCH: true
+
+      - name: Post Changelog Checkout
+        if: steps.is_support_branch.outputs.filtered_branch_name == ''
+        uses: actions/checkout@master
+        with:
+          ref: main
       # END CHANGELOG PORTION
 
 
       # Merge support changes into develop so they can be included in the next release
-      - name: Merge master/support -> develop
+      - name: Merge support -> develop
+        if: steps.is_support_branch.outputs.filtered_branch_name != ''
         uses: devmasx/merge-branch@master
         with:
           type: now
           target_branch: develop
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          message: Merged master/support into develop
+          message: Merged support into develop
+
+      # Merge main changes into develop
+      - name: Merge main -> develop
+        if: steps.is_support_branch.outputs.filtered_branch_name == ''
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: main
+          target_branch: develop
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          message: Merged main into develop
 
       # Remove the release or hotfix branch after publishing
       - name: Remove PR branch
