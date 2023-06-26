@@ -304,6 +304,8 @@ class NewsletterPageControllerExtender extends DataExtension
     $submission->LastName = $LastName;
     $submission->write();
 
+    $this->owner->extend('onAfterInsertToNewsletter', $submission);
+
     return $status;
   }
 }
