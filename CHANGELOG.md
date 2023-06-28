@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.1.3 - 2023-06-28
+## 🎉 New Features
+- newsletter api tests ([#39](https://github.com/werkbot/silverstripe-module-newsletter/pull/39) by [tiller1010](https://github.com/tiller1010))
+
+## 🎉 New Features
+- added extension point for inserted newsletter submissions
+
+## 🏗️ Build System
+- updated workflow files
+
+
+
 ## 2.1.2 - 2023-04-03
 ## 🎉 New Features
 - newsletter api tests ([#39](https://github.com/werkbot/silverstripe-module-newsletter/pull/39) by [tiller1010](https://github.com/tiller1010))
