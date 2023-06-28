@@ -56,7 +56,7 @@ jobs:
         if: steps.is_hotfix_branch.outputs.filtered_pr_branch_name != ''
         run: |
           HOTFIXBRANCH="${{ steps.payload_info.outputs.branch }}"
-          RELEASETAG=$(echo "$HOTFIXBRANCH" | sed -re "s/hotfix\///;s/\*//;s/\s*//g")
+          RELEASETAG=$(echo "$HOTFIXBRANCH" | sed -re "s/(\* )?hotfix\///;s/(\w+)\/.*/\1/g")
           echo "release_tag=$RELEASETAG" >> $GITHUB_OUTPUT
 
       - name: Get Last Tag created on this branch
