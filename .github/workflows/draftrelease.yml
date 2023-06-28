@@ -3,8 +3,8 @@ name: Release Drafter
 on:
   push:
     branches:
-      - release/*
-      - hotfix/*
+      - release/**
+      - hotfix/**
 
 permissions:
   contents: read
@@ -27,15 +27,13 @@ jobs:
         run: |
           FILTEREDBRANCHNAME=$(git branch | grep "\* release")
           echo "filtered_branch_name=$FILTEREDBRANCHNAME" >> $GITHUB_OUTPUT
-
       # Get the release tag
       - name: Get release Tag
         id: get_release_tag
         if: steps.is_release_branch.outputs.filtered_branch_name != ''
         run: |
-          RELEASETAG=$(git branch | grep \* | sed -re "s/release\///;s/\*//;s/\s*//g")
+          RELEASETAG=$(git branch | grep \* | sed -re "s/(\* )?release\///;s/(\w+)\/.*/\1/g")
           echo "release_tag=$RELEASETAG" >> $GITHUB_OUTPUT
-
       # Draft Release with release branch
       - name: Draft Release with release branch
         id: update_release_draft_with_release_branch
@@ -56,15 +54,13 @@ jobs:
         run: |
           FILTEREDBRANCHNAME=$(git branch | grep "\* hotfix")
           echo "filtered_branch_name=$FILTEREDBRANCHNAME" >> $GITHUB_OUTPUT
-
       # Get the hotfix tag
       - name: Get hotfix Tag
         id: get_hotfix_tag
         if: steps.is_hotfix_branch.outputs.filtered_branch_name != ''
         run: |
-          RELEASETAG=$(git branch | grep \* | sed -re "s/hotfix\///;s/\*//;s/\s*//g")
+          RELEASETAG=$(git branch | grep \* | sed -re "s/(\* )?hotfix\///;s/(\w+)\/.*/\1/g")
           echo "release_tag=$RELEASETAG" >> $GITHUB_OUTPUT
-
       # Get the last tag created on this branch
       - name: Get Last Tag
         id: last_tag
@@ -72,7 +68,6 @@ jobs:
         run: |
           LASTTAG=$(git describe --tags | sed -re "s/-.+//")
           echo "last_tag_on_branch=$LASTTAG" >> $GITHUB_OUTPUT
-
       # Draft Release with hotfix branch
       - name: Draft Release with hotfix branch
         id: update_release_draft_with_hotfix_branch
