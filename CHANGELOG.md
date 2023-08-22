@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.4 - 2023-08-22
+## 🐛 Bugfixes
+- check for name variables in request array
+
+
+
 ## 2.1.3 - 2023-06-28
 ## 🎉 New Features
 - newsletter api tests ([#39](https://github.com/werkbot/silverstripe-module-newsletter/pull/39) by [tiller1010](https://github.com/tiller1010))
