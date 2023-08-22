@@ -93,8 +93,11 @@ class NewsletterPageControllerExtender extends DataExtension
    */
   public function ProcessNewsletterForm($data, Form $form)
   {
+    $email = isset($data["Email"]) ? $data["Email"] : "";
+    $firstname = isset($data["FirstName"]) ? $data["FirstName"] : "";
+    $lastname = isset($data["LastName"]) ? $data["LastName"] : "";
 
-    $status = $this->owner->InsertToNewsletter($data["Email"], $data["FirstName"], $data["LastName"]);
+    $status = $this->owner->InsertToNewsletter($email, $firstname, $lastname);
 
     $resultdata = [
       "NewsletterMessage" => "",
