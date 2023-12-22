@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.5 - 2023-12-22
+## 🐛 Bugfixes
+- Added check for Show/Hide setting
+
+
+
 ## 2.1.4 - 2023-08-22
 ## 🐛 Bugfixes
 - check for name variables in request array
