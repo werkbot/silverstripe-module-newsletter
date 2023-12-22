@@ -20,10 +20,12 @@ class NewsletterShortcodeProvider extends ShortcodeParser{
       $PopupContent .= '<div class="'.$args['class'].'">';
     }
     // Get Form HTML
-    $PopupContent .= Controller::curr()->NewsletterForm()
-      ->setHTMLID("NewsletterForm".rand(0,100))
-      ->setFormAction(Controller::join_links(Controller::curr()->owner->Link(), 'NewsletterForm'))
-      ->forTemplate();
+    if (Controller::curr()->owner->NewsletterShowHide){
+      $PopupContent .= Controller::curr()->NewsletterForm()
+        ->setHTMLID("NewsletterForm".rand(0,100))
+        ->setFormAction(Controller::join_links(Controller::curr()->owner->Link(), 'NewsletterForm'))
+        ->forTemplate();
+    }
     // End wrapper div
     if (isset($args['class'])){
       $PopupContent .= '</div>';
