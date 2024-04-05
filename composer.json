@@ -5,9 +5,8 @@
   "license": "MIT",
   "homepage": "https://github.com/werkbot/silverstripe-module-newsletter",
   "require": {
-    "php": "^7.3 || ^8.0",
-    "silverstripe/cms": "~4.0",
-    "silverstripe/framework": "~4.0",
+    "silverstripe/cms": "^5.0",
+		"silverstripe/framework": "^5.0",
     "campaignmonitor/createsend-php": "*",
     "constantcontact/constantcontact": "*",
     "activecampaign/api-php": "*",
