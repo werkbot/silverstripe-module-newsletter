@@ -41,3 +41,7 @@ Newsletter subscribers can automatically be added to a third party mailing servi
 - Enter the environment variables for your desired integration. See the [.env.example](../../.env.example) file.
 - In the newsletter settings (`/admin/settings`), select the desired newsletter API.
 - Select a contact list to insert new subscribers. If no list selection appears, check your environment variables. Note that there are currently no list options for Redtail CRM.
+
+### Shortcode
+You can include a newsletter form in HTMLeditors with a shortcode: `[newsletterform,class="form newsletter-form"]`
+The `class` attribute can be used to add a css class to the form.
