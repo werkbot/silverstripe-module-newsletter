@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.0 - 2024-05-02
+
+
+
+
 ## 2.1.5 - 2023-12-22
 ## 🐛 Bugfixes
 - Added check for Show/Hide setting
