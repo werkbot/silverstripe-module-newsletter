@@ -24,8 +24,8 @@ class NewsletterCurlHelper
    * callCurl - Makes curl call
    *
    * @param string $opcall - Operation call, e.g. https://example-api.net/api-action
-   * @param string postData - JSON Data to post (optional based on call)
-   * @param string encodedAuth - Encoded Authentication
+   * @param string $postData - JSON Data to post (optional based on call)
+   * @param string $encodedAuth - Encoded Authentication
    * @return string $result - JSON response
    */
   public function callCurl($opcall = null, $postData = null, $encodedAuth = null)
@@ -51,4 +51,6 @@ class NewsletterCurlHelper
       }
       return $result;
   }
+
 }
+
