@@ -132,7 +132,7 @@ class NewsletterPageControllerExtender extends DataExtension
   /**
    * Creates a new NewsletterSubmission and inserts subscriber info into optional thirdparty mailing service
    *
-   * @param string $email - The subscriber's email address
+   * @param string $Email - The subscriber's email address
    * @param string $FirstName - The subscriber's first name
    * @param string $LastName - The subscriber's last name
    * @return boolean $status - The success status, true being successful
@@ -311,4 +311,6 @@ class NewsletterPageControllerExtender extends DataExtension
 
     return $status;
   }
+
 }
+
