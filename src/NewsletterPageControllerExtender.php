@@ -146,14 +146,14 @@ class NewsletterPageControllerExtender extends DataExtension
     if ($config->NewsletterAPI == "campaignmonitor" && $config->CampaignMonitorListID) {
       $auth = array('api_key' => Environment::getEnv('CAMPAIGNMONITOR_API_KEY'));
       $wrap = new \CS_REST_Subscribers($config->CampaignMonitorListID, $auth);
-      //
+
       $data = array(
         'EmailAddress' => $Email,
         'Name' => $FirstName . " " . $LastName,
         'ConsentToTrack' => 'yes',
         'Resubscribe' => true
       );
-      //
+
       $this->owner->extend("updateCampaignMonitorNewsletter", $data);
       $result = $wrap->add($data);
     }
@@ -165,15 +165,20 @@ class NewsletterPageControllerExtender extends DataExtension
         'apiKey' => Environment::getEnv('MAILCHIMP_API_KEY'),
         'server' => Environment::getEnv('MAILCHIMP_SERVER_PREFIX')
       ]);
+
+      $data = [
+        "email_address" => $Email,
+        "merge_fields" => [
+          "FNAME" => $FirstName,
+          "LNAME" => $LastName,
+        ],
+        "status_if_new" => "subscribed",
+      ];
+
+      $this->owner->extend('updateMailchimpNewsletter', $data);
+
       try {
-        $response = $mailchimp->lists->setListMember($config->MailchimpListID, md5($Email), [
-          "email_address" => $Email,
-          "merge_fields" => [
-            "FNAME" => $FirstName,
-            "LNAME" => $LastName,
-          ],
-          "status_if_new" => "subscribed",
-        ]);
+        $response = $mailchimp->lists->setListMember($config->MailchimpListID, md5($Email), $data);
       } catch (\GuzzleHttp\Exception\ClientException $e) {
         // Issue while adding
         $status = false;
