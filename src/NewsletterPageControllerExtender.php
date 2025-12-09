@@ -166,14 +166,20 @@ class NewsletterPageControllerExtender extends DataExtension
         'server' => Environment::getEnv('MAILCHIMP_SERVER_PREFIX')
       ]);
       try {
-        $response = $mailchimp->lists->setListMember($config->MailchimpListID, md5($Email), [
+        $mailchimpData = [
           "email_address" => $Email,
-          "merge_fields" => [
-            "FNAME" => $FirstName,
-            "LNAME" => $LastName,
-          ],
           "status_if_new" => "subscribed",
-        ]);
+        ];
+
+        if ($FirstName) {
+          $mailchimpData['merge_fields']['FNAME'] = $FirstName;
+        }
+
+        if ($LastName) {
+          $mailchimpData['merge_fields']['LNAME'] = $LastName;
+        }
+
+        $response = $mailchimp->lists->setListMember($config->MailchimpListID, md5($Email), $mailchimpData);
       } catch (\GuzzleHttp\Exception\ClientException $e) {
         // Issue while adding
         $status = false;
