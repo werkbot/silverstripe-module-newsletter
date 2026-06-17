@@ -120,8 +120,8 @@ jobs:
         id: create_pr
         uses: peter-evans/create-pull-request@v7
         with:
-          title: Auto-Update CHANGELOG.md and doctum_build
-          commit-message: Updated CHANGELOG.md and doctum_build
+          title: Auto-Update CHANGELOG.md
+          commit-message: Updated CHANGELOG.md
           labels: automerge
 
       - name: Approve PR
