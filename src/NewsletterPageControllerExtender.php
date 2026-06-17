@@ -165,6 +165,21 @@ class NewsletterPageControllerExtender extends DataExtension
         'apiKey' => Environment::getEnv('MAILCHIMP_API_KEY'),
         'server' => Environment::getEnv('MAILCHIMP_SERVER_PREFIX')
       ]);
+      try {
+        $mailchimpData = [
+          "email_address" => $Email,
+          "status_if_new" => "subscribed",
+        ];
+
+        if ($FirstName) {
+          $mailchimpData['merge_fields']['FNAME'] = $FirstName;
+        }
+
+        if ($LastName) {
+          $mailchimpData['merge_fields']['LNAME'] = $LastName;
+        }
+
+        $response = $mailchimp->lists->setListMember($config->MailchimpListID, md5($Email), $mailchimpData);
 
       $data = [
         "email_address" => $Email,

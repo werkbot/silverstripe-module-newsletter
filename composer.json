@@ -12,6 +12,12 @@
     "activecampaign/api-php": "^2.0",
     "mailchimp/marketing": "^3.0"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/werkbot/mailchimp-marketing-php.git"
+    }
+  ],
   "require-dev": {
     "phpunit/phpunit": "^9.5"
   },
