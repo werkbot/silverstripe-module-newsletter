@@ -2,6 +2,9 @@
 
 namespace Werkbot\Newsletter;
 
+use Symfony\Component\Console\Input\InputInterface;
+use SilverStripe\PolyExecution\PolyOutput;
+use Symfony\Component\Console\Command\Command;
 use SilverStripe\Dev\BuildTask;
 
 /**
@@ -9,17 +12,21 @@ use SilverStripe\Dev\BuildTask;
  */
 class RemoveSubmissions extends BuildTask
 {
-  protected $title = "Remove Submissions";
-  protected $description = "Removes old newsletter submissions from the database.";
-  protected $enabled = true;
+  protected string $title = "Remove Submissions";
+  protected static string $description = "Removes old newsletter submissions from the database.";
+  /**
+   * @config
+   */
+  private static $is_enabled = true;
   private static $remove_submission_cuttoff = "-30 days";
 
-  public function run($request)
+  protected function execute(InputInterface $input, PolyOutput $output): int
   {
-    $CutoffDate = date('Y-m-d H:i:s', strtotime($this->config()->remove_submission_cuttoff));
-    $NewsletterSubmissions = NewsletterSubmission::get()->filter(array("Created:LessThan" => $CutoffDate));
-    $Total = $NewsletterSubmissions->Count();
-    $NewsletterSubmissions->removeAll();
-    echo $Total . " newsletter submissions removed";
+      $CutoffDate = date('Y-m-d H:i:s', strtotime($this->config()->remove_submission_cuttoff));
+      $NewsletterSubmissions = NewsletterSubmission::get()->filter(array("Created:LessThan" => $CutoffDate));
+      $Total = $NewsletterSubmissions->Count();
+      $NewsletterSubmissions->removeAll();
+      echo $Total . " newsletter submissions removed";
+      return Command::SUCCESS;
   }
 }

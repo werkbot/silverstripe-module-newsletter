@@ -2,6 +2,12 @@
 
 namespace Werkbot\Newsletter;
 
+use SilverStripe\Core\Extension;
+use CS_REST_Clients;
+use Exception;
+use GuzzleHttp\Exception\ClientException;
+use Ctct\Exceptions\CtctException;
+use ActiveCampaign;
 use Ctct\ConstantContact;
 use MailchimpMarketing\ApiClient;
 use SilverStripe\Core\Environment;
@@ -9,13 +15,12 @@ use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use SilverStripe\Forms\OptionsetField;
-use SilverStripe\ORM\DataExtension;
 use SilverStripe\View\Requirements;
 
 /**
  * A SiteConfig extension that adds global newsletter settings to your site.
  */
-class NewsletterSettings extends DataExtension
+class NewsletterSettings extends Extension
 {
 
   private static $db = [
@@ -54,10 +59,10 @@ class NewsletterSettings extends DataExtension
     if (Environment::getEnv('CAMPAIGNMONITOR_API_KEY') && Environment::getEnv('CAMPAIGNMONITOR_CLIENT_ID')) {
       try {
         $auth = array('api_key' => Environment::getEnv('CAMPAIGNMONITOR_API_KEY'));
-        $wrap = new \CS_REST_Clients(Environment::getEnv('CAMPAIGNMONITOR_CLIENT_ID'), $auth);
+        $wrap = new CS_REST_Clients(Environment::getEnv('CAMPAIGNMONITOR_CLIENT_ID'), $auth);
         $result = $wrap->get_lists();
         if (!$result->was_successful()) {
-          throw new \Exception('The connection to Campaign Monitor could not be established.');
+          throw new Exception('The connection to Campaign Monitor could not be established.');
         }
         $listarray = array();
         foreach ($result->response as $list) {
@@ -66,7 +71,7 @@ class NewsletterSettings extends DataExtension
         $CampaignMonitorListID = DropdownField::create("CampaignMonitorListID", "Select a list", $listarray)
           ->displayIf("NewsletterAPI")->isEqualTo("campaignmonitor")->end();
         $fields->addFieldToTab('Root.Newsletter', $CampaignMonitorListID);
-      } catch(\Exception $e) {
+      } catch(Exception $e) {
         $this->showIntegrationWarning($e->getMessage());
       }
     }
@@ -87,7 +92,7 @@ class NewsletterSettings extends DataExtension
         $MailchimpListID = DropdownField::create("MailchimpListID", "Select a list", $listarray)
           ->displayIf("NewsletterAPI")->isEqualTo("mailchimp")->end();
         $fields->addFieldToTab('Root.Newsletter', $MailchimpListID);
-      } catch(\GuzzleHttp\Exception\ClientException $e) {
+      } catch(ClientException $e) {
         $this->showIntegrationWarning('The connection to Mailchimp could not be established.');
       }
     }
@@ -104,7 +109,7 @@ class NewsletterSettings extends DataExtension
         $ConstantContactListID = DropdownField::create("ConstantContactListID", "Select a list", $listarray)
           ->displayIf("NewsletterAPI")->isEqualTo("constantcontact")->end();
         $fields->addFieldToTab('Root.Newsletter', $ConstantContactListID);
-      } catch(\Ctct\Exceptions\CtctException $e) {
+      } catch(CtctException $e) {
         $this->showIntegrationWarning('The connection to Constant Contact could not be established. ' . $e->getErrors()[0]['error_message']);
       }
     }
@@ -113,9 +118,9 @@ class NewsletterSettings extends DataExtension
     if (Environment::getEnv('ACTIVECAMPAIGN_API_KEY') && Environment::getEnv('ACTIVECAMPAIGN_URL')) {
       try {
         // Active Campaign List Select
-        $ac = new \ActiveCampaign(Environment::getEnv('ACTIVECAMPAIGN_URL'), Environment::getEnv('ACTIVECAMPAIGN_API_KEY'));
+        $ac = new ActiveCampaign(Environment::getEnv('ACTIVECAMPAIGN_URL'), Environment::getEnv('ACTIVECAMPAIGN_API_KEY'));
         if (!$ac->credentials_test()) {
-          throw new \Exception('The connection to Active Campaign could not be established.');
+          throw new Exception('The connection to Active Campaign could not be established.');
         }
         // Adjust the default cURL timeout
         $ac->set_curl_timeout(10);
@@ -132,19 +137,19 @@ class NewsletterSettings extends DataExtension
         $ActiveCampaignListID = DropdownField::create("ActiveCampaignListID", "Select a list", $listarray)
           ->displayIf("NewsletterAPI")->isEqualTo("activecampaign")->end();
         $fields->addFieldToTab('Root.Newsletter', $ActiveCampaignListID);
-      } catch(\Exception $e) {
+      } catch(Exception $e) {
         $this->showIntegrationWarning($e->getMessage());
       }
     }
 
     // Success text
-    $htmlField = new HTMLEditorField('NewsletterSuccessText', 'Success/Thankyou Text');
+    $htmlField = HTMLEditorField::create('NewsletterSuccessText', 'Success/Thankyou Text');
     $htmlField->addExtraClass('stacked');
     $htmlField->setRows(5);
     $fields->addFieldToTab('Root.Newsletter', $htmlField);
 
     // Error text
-    $htmlField = new HTMLEditorField('NewsletterErrorText', 'Error Text');
+    $htmlField = HTMLEditorField::create('NewsletterErrorText', 'Error Text');
     $htmlField->addExtraClass('stacked');
     $htmlField->setRows(5);
     $fields->addFieldToTab('Root.Newsletter', $htmlField);

@@ -2,16 +2,16 @@
 
 namespace Werkbot\Newsletter;
 
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FieldGroup;
-use SilverStripe\ORM\DataExtension;
 use SilverStripe\Forms\CheckboxField;
 
 /**
  * A page extension that adds the option to display/hide the newsletter sign-up form.
  */
-class NewsletterPageExtender extends DataExtension
+class NewsletterPageExtender extends Extension
 {
 
   private static $db = [
@@ -26,10 +26,10 @@ class NewsletterPageExtender extends DataExtension
     'NewsletterShortcode' => 'HTMLText'
   ];
 
-  public function populateDefaults()
+  public function onAfterPopulateDefaults()
   {
-    $this->owner->NewsletterShowHide = true;
-    parent::populateDefaults();
+    $this->getOwner()->NewsletterShowHide = true;
+    parent::onAfterPopulateDefaults();
   }
 
   public function updateSettingsFields(FieldList $fields)
@@ -40,10 +40,6 @@ class NewsletterPageExtender extends DataExtension
       CheckboxField::create('NewsletterShowHide', 'Show the newsletter signup form on this page?')
     );
 
-    $NewsletterTab->push(new Tab(
-      'NewsletterTab',
-      'Newsletter Options',
-      $NewsletterShowHide
-    ));
+    $NewsletterTab->push(Tab::create('NewsletterTab', 'Newsletter Options', $NewsletterShowHide));
   }
 }

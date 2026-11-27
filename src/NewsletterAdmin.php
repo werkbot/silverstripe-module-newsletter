@@ -2,6 +2,8 @@
 
 namespace Werkbot\Newsletter;
 
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 
@@ -25,8 +27,8 @@ class NewsletterAdmin extends ModelAdmin
    * Main NewsletterAdmin edit form.
    *
    * @param int|null $id
-   * @param \SilverStripe\Forms\FieldList $fields
-   * @return \SilverStripe\Forms\Form A Form object with one tab per {@link \SilverStripe\Forms\GridField\GridField}
+   * @param FieldList $fields
+   * @return Form A Form object with one tab per {@link \SilverStripe\Forms\GridField\GridField}
    */
   public function getEditForm($id = null, $fields = null)
   {
