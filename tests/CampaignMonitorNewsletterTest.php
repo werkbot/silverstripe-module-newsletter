@@ -2,6 +2,9 @@
 
 namespace Werkbot\Newsletter;
 
+use CS_REST_Clients;
+use CS_REST_Subscribers;
+use GuzzleHttp\Exception\ClientException;
 use SilverStripe\Core\Environment;
 use SilverStripe\Dev\FunctionalTest;
 
@@ -41,7 +44,7 @@ class CampaignMonitorNewsletterTest extends FunctionalTest
     if (Environment::getEnv('CAMPAIGNMONITOR_CLIENT_ID') && Environment::getEnv('CAMPAIGNMONITOR_API_KEY')) {
       $auth = ['api_key' => Environment::getEnv('CAMPAIGNMONITOR_API_KEY')];
       try {
-        $clientsWrap = new \CS_REST_Clients(Environment::getEnv('CAMPAIGNMONITOR_CLIENT_ID'), $auth);
+        $clientsWrap = new CS_REST_Clients(Environment::getEnv('CAMPAIGNMONITOR_CLIENT_ID'), $auth);
         $listsResult = $clientsWrap->get_lists();
         if ($listsResult->was_successful()) {
           $this->assertEquals(200, $listsResult->http_status_code);
@@ -53,7 +56,7 @@ class CampaignMonitorNewsletterTest extends FunctionalTest
           $listID = $listsResult->response[0]->ListID;
         }
 
-        $subscribersWrap = new \CS_REST_Subscribers($listID, $auth);
+        $subscribersWrap = new CS_REST_Subscribers($listID, $auth);
         $email = 'campaignmonitor-newsletter-test' . rand(0, 9999) .  '@email.com';
         $data = [
           'EmailAddress' => $email,
@@ -74,7 +77,7 @@ class CampaignMonitorNewsletterTest extends FunctionalTest
           $this->assertResultFailure($addSubscriberResult);
           return;
         }
-      } catch (\GuzzleHttp\Exception\ClientException $e) {
+      } catch (ClientException $e) {
         $this->assertExceptionFailure($e);
         return;
       }
@@ -87,7 +90,7 @@ class CampaignMonitorNewsletterTest extends FunctionalTest
   {
     if (Environment::getEnv('CAMPAIGNMONITOR_CLIENT_ID') && Environment::getEnv('CAMPAIGNMONITOR_API_KEY')) {
       $auth = ['api_key' => Environment::getEnv('CAMPAIGNMONITOR_API_KEY')];
-      $wrap = new \CS_REST_Clients(Environment::getEnv('CAMPAIGNMONITOR_CLIENT_ID'), $auth);
+      $wrap = new CS_REST_Clients(Environment::getEnv('CAMPAIGNMONITOR_CLIENT_ID'), $auth);
 
       $result = $wrap->get_lists();
       if ($result->was_successful()) {

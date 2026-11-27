@@ -2,6 +2,8 @@
 
 namespace Werkbot\Newsletter;
 
+use CS_REST_General;
+use ActiveCampaign;
 use MailchimpMarketing\ApiClient;
 use SilverStripe\Core\Environment;
 use SilverStripe\Dev\FunctionalTest;
@@ -20,7 +22,7 @@ class NewsletterTest extends FunctionalTest
   {
     if (Environment::getEnv('CAMPAIGNMONITOR_API_KEY')) {
       $auth = array('api_key' => Environment::getEnv('CAMPAIGNMONITOR_API_KEY'));
-      $wrap = new \CS_REST_General($auth);
+      $wrap = new CS_REST_General($auth);
       $result = $wrap->get_clients();
       $this->assertEquals(200, $result->http_status_code);
     } else {
@@ -62,7 +64,7 @@ class NewsletterTest extends FunctionalTest
   public function testConnectionActiveCampaign()
   {
     if (Environment::getEnv('ACTIVECAMPAIGN_URL') && Environment::getEnv('ACTIVECAMPAIGN_API_KEY')) {
-      $ac = new \ActiveCampaign(Environment::getEnv('ACTIVECAMPAIGN_URL'), Environment::getEnv('ACTIVECAMPAIGN_API_KEY'));
+      $ac = new ActiveCampaign(Environment::getEnv('ACTIVECAMPAIGN_URL'), Environment::getEnv('ACTIVECAMPAIGN_API_KEY'));
       $this->assertEquals(true, $ac->credentials_test());
     } else {
       $this->markTestSkipped('api key not set in the env.');

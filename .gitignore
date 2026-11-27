@@ -1,1 +1,5 @@
+composer.lock
+doctum_build
+doctum_cache
 gh-payload.json
+vendor/

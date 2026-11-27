@@ -2,9 +2,8 @@
 
 namespace Werkbot\Newsletter;
 
-use SilverStripe\Core\Config\Config;
+use PageController;
 use SilverStripe\Dev\SapphireTest;
-use SilverStripe\Versioned\Versioned;
 
 /**
  * Run with:
@@ -19,8 +18,8 @@ class NewsletterPageControllerExtenderTest extends SapphireTest
    */
   public function testInsertToNewsletter()
   {
-    $this->assertEquals(true, \PageController::create()->InsertToNewsletter("test1@test.com"));
-    $this->assertEquals(true, \PageController::create()->InsertToNewsletter("test2@test.com", "Test 2"));
-    $this->assertEquals(true, \PageController::create()->InsertToNewsletter("test3@test.com", "Test 3", "Test 3"));
+    $this->assertEquals(true, PageController::create()->InsertToNewsletter("test1@test.com"));
+    $this->assertEquals(true, PageController::create()->InsertToNewsletter("test2@test.com", "Test 2"));
+    $this->assertEquals(true, PageController::create()->InsertToNewsletter("test3@test.com", "Test 3", "Test 3"));
   }
 }

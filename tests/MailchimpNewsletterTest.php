@@ -2,6 +2,7 @@
 
 namespace Werkbot\Newsletter;
 
+use GuzzleHttp\Exception\ClientException;
 use MailchimpMarketing\ApiClient;
 use SilverStripe\Core\Environment;
 use SilverStripe\Dev\FunctionalTest;
@@ -63,7 +64,7 @@ class MailchimpNewsletterTest extends FunctionalTest
           $this->assertEquals("Everything's Chimpy!", $response->health_status);
 
         }
-      } catch (\GuzzleHttp\Exception\ClientException $e) {
+      } catch (ClientException $e) {
         $this->assertExceptionFailure($e);
         return;
       }

@@ -2,6 +2,11 @@
 
 namespace Werkbot\Newsletter;
 
+use SilverStripe\Core\Extension;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator;
+use CS_REST_Subscribers;
+use GuzzleHttp\Exception\ClientException;
+use ActiveCampaign;
 use Ctct\ConstantContact;
 use SilverStripe\Forms\Form;
 use MailchimpMarketing\ApiClient;
@@ -11,15 +16,13 @@ use Ctct\Exceptions\CtctException;
 use SilverStripe\Core\Environment;
 use SilverStripe\Forms\EmailField;
 use SilverStripe\Forms\FormAction;
-use SilverStripe\ORM\DataExtension;
 use Ctct\Components\Contacts\Contact;
-use SilverStripe\Forms\RequiredFields;
 use SilverStripe\SiteConfig\SiteConfig;
 
 /**
  * A PageController extension that handles newsletter related requests.
  */
-class NewsletterPageControllerExtender extends DataExtension
+class NewsletterPageControllerExtender extends Extension
 {
   private static $allowed_actions = [
     "NewsletterForm",
@@ -33,44 +36,36 @@ class NewsletterPageControllerExtender extends DataExtension
    */
   public function NewsletterForm()
   {
-    if (!$this->owner->NewsletterShowHide) {
+    if (!$this->getOwner()->NewsletterShowHide) {
       return false;
     }
     $config = SiteConfig::current_site_config();
 
-    if ($this->owner->isAjax) {
-      return $this->owner->ProcessNewsletterForm($_POST);
+    if ($this->getOwner()->isAjax) {
+      return $this->getOwner()->ProcessNewsletterForm($_POST);
     } else {
       //FIELDS
-      $fields = new FieldList(
-        EmailField::create("Email", _t("NewsletterForm.LABEL", "Enter Email"))
-          ->setAttribute('title', _t("NewsletterForm.TITLE", "Enter Your Email"))
-          ->setAttribute('placeholder', _t("NewsletterForm.PLACEHOLDER", "Enter Your Email")),
-
-        TextField::create("FirstName", _t("NewsletterForm.LABEL_FIRSTNAME", "First Name"))
-          ->setAttribute('title', _t("NewsletterForm.TITLE_FIRSTNAME", "Enter Your First Name"))
-          ->setAttribute('placeholder', _t("NewsletterForm.PLACEHOLDER_FIRSTNAME", "Enter Your First Name")),
-
-        TextField::create("LastName", _t("NewsletterForm.LABEL_LASTNAME", "Last Name"))
-          ->setAttribute('title', _t("NewsletterForm.TITLE_LASTNAME", "Enter Your Last Name"))
-          ->setAttribute('placeholder', _t("NewsletterForm.PLACEHOLDER_LASTNAME", "Enter Your Last Name"))
-      );
+      $fields = FieldList::create(EmailField::create("Email", _t("NewsletterForm.LABEL", "Enter Email"))
+        ->setAttribute('title', _t("NewsletterForm.TITLE", "Enter Your Email"))
+        ->setAttribute('placeholder', _t("NewsletterForm.PLACEHOLDER", "Enter Your Email")), TextField::create("FirstName", _t("NewsletterForm.LABEL_FIRSTNAME", "First Name"))
+        ->setAttribute('title', _t("NewsletterForm.TITLE_FIRSTNAME", "Enter Your First Name"))
+        ->setAttribute('placeholder', _t("NewsletterForm.PLACEHOLDER_FIRSTNAME", "Enter Your First Name")), TextField::create("LastName", _t("NewsletterForm.LABEL_LASTNAME", "Last Name"))
+        ->setAttribute('title', _t("NewsletterForm.TITLE_LASTNAME", "Enter Your Last Name"))
+        ->setAttribute('placeholder', _t("NewsletterForm.PLACEHOLDER_LASTNAME", "Enter Your Last Name")));
 
       //ACTIONS
       $actionbutton = FormAction::create('ProcessNewsletterForm', _t("NewsletterForm.ACTION", "Sign Up"))
         ->setUseButtonTag(true)
         ->setAttribute("aria-label", _t("NewsletterForm.ACTION", "Sign Up"));
-      $actions = new FieldList(
-        $actionbutton
-      );
+      $actions = FieldList::create($actionbutton);
 
       //VALIDATORS
-      $validator = new RequiredFields('Email');
+      $validator = RequiredFieldsValidator::create('Email');
 
-      $this->owner->extend('updateNewsletterFormFields', $fields);
+      $this->getOwner()->extend('updateNewsletterFormFields', $fields);
 
       //CREATE THE FORM
-      $Form = new Form($this->owner, "NewsletterForm", $fields, $actions, $validator);
+      $Form = Form::create($this->getOwner(), "NewsletterForm", $fields, $actions, $validator);
 
       // Enable Recaptcha if enabled
       if (Environment::getEnv('NEWSLETTER_RECAPTCHA')) {
@@ -97,35 +92,35 @@ class NewsletterPageControllerExtender extends DataExtension
     $firstname = isset($data["FirstName"]) ? $data["FirstName"] : "";
     $lastname = isset($data["LastName"]) ? $data["LastName"] : "";
 
-    $status = $this->owner->InsertToNewsletter($email, $firstname, $lastname);
+    $status = $this->getOwner()->InsertToNewsletter($email, $firstname, $lastname);
 
     $resultdata = [
       "NewsletterMessage" => "",
       "MessageType" => "",
     ];
 
-    $this->owner->extend("updateProcessNewsletterForm", $data);
+    $this->getOwner()->extend("updateProcessNewsletterForm", $data);
 
     if ($status) {
       //SHOW SUCCESS PAGE
-      if ($this->owner->SiteConfig->NewsletterSuccessText) {
-        $resultdata["NewsletterMessage"] = $this->owner->SiteConfig->NewsletterSuccessText;
+      if ($this->getOwner()->SiteConfig->NewsletterSuccessText) {
+        $resultdata["NewsletterMessage"] = $this->getOwner()->SiteConfig->NewsletterSuccessText;
       } else {
         $resultdata["NewsletterMessage"] = 'Thank you for subscribing!';
       }
       $resultdata["MessageType"] = "good";
 
-      return $this->owner->customise($resultdata)->renderWith(array($this->owner->ClassName, 'Page', 'NewsletterFormSubmission'));
+      return $this->getOwner()->customise($resultdata)->renderWith(array($this->getOwner()->ClassName, 'Page', 'NewsletterFormSubmission'));
     } else {
       //SHOW ERROR PAGE
-      if ($this->owner->SiteConfig->NewsletterErrorText) {
-        $resultdata["NewsletterMessage"] = $this->owner->SiteConfig->NewsletterErrorText;
+      if ($this->getOwner()->SiteConfig->NewsletterErrorText) {
+        $resultdata["NewsletterMessage"] = $this->getOwner()->SiteConfig->NewsletterErrorText;
       } else {
         $resultdata["NewsletterMessage"] = 'There was an issue processing your request.';
       }
       $resultdata["MessageType"] = "bad";
 
-      return $this->owner->customise($resultdata)->renderWith(array($this->owner->ClassName, 'Page', 'NewsletterFormSubmission'));
+      return $this->getOwner()->customise($resultdata)->renderWith(array($this->getOwner()->ClassName, 'Page', 'NewsletterFormSubmission'));
     }
   }
 
@@ -145,7 +140,7 @@ class NewsletterPageControllerExtender extends DataExtension
     // Insert Into Campaign Monitor
     if ($config->NewsletterAPI == "campaignmonitor" && $config->CampaignMonitorListID) {
       $auth = array('api_key' => Environment::getEnv('CAMPAIGNMONITOR_API_KEY'));
-      $wrap = new \CS_REST_Subscribers($config->CampaignMonitorListID, $auth);
+      $wrap = new CS_REST_Subscribers($config->CampaignMonitorListID, $auth);
 
       $data = array(
         'EmailAddress' => $Email,
@@ -154,7 +149,7 @@ class NewsletterPageControllerExtender extends DataExtension
         'Resubscribe' => true
       );
 
-      $this->owner->extend("updateCampaignMonitorNewsletter", $data);
+      $this->getOwner()->extend("updateCampaignMonitorNewsletter", $data);
       $result = $wrap->add($data);
     }
 
@@ -166,35 +161,18 @@ class NewsletterPageControllerExtender extends DataExtension
         'server' => Environment::getEnv('MAILCHIMP_SERVER_PREFIX')
       ]);
       try {
-        $mailchimpData = [
+        $data = [
           "email_address" => $Email,
+          "merge_fields" => [
+            "FNAME" => $FirstName,
+            "LNAME" => $LastName,
+          ],
           "status_if_new" => "subscribed",
         ];
 
-        if ($FirstName) {
-          $mailchimpData['merge_fields']['FNAME'] = $FirstName;
-        }
-
-        if ($LastName) {
-          $mailchimpData['merge_fields']['LNAME'] = $LastName;
-        }
-
-        $response = $mailchimp->lists->setListMember($config->MailchimpListID, md5($Email), $mailchimpData);
-
-      $data = [
-        "email_address" => $Email,
-        "merge_fields" => [
-          "FNAME" => $FirstName,
-          "LNAME" => $LastName,
-        ],
-        "status_if_new" => "subscribed",
-      ];
-
-      $this->owner->extend('updateMailchimpNewsletter', $data);
-
-      try {
+        $this->getOwner()->extend('updateMailchimpNewsletter', $data);
         $response = $mailchimp->lists->setListMember($config->MailchimpListID, md5($Email), $data);
-      } catch (\GuzzleHttp\Exception\ClientException $e) {
+      } catch (ClientException $e) {
         // Issue while adding
         $status = false;
       }
@@ -238,7 +216,7 @@ class NewsletterPageControllerExtender extends DataExtension
             $contact->first_name = $FirstName;
             $contact->last_name = $LastName;
 
-            $this->owner->extend("updateCreateConstantContactNewsletter", $contact);
+            $this->getOwner()->extend("updateCreateConstantContactNewsletter", $contact);
 
             $returnContact = $cc->addContact(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), $contact, true);
           } else { // update the existing contact if address already existed
@@ -248,7 +226,7 @@ class NewsletterPageControllerExtender extends DataExtension
             if ($contact instanceof Contact) {
               $contact->addList($config->ConstantContactListID);
 
-              $this->owner->extend("updateConstantContactNewsletter", $contact);
+              $this->getOwner()->extend("updateConstantContactNewsletter", $contact);
 
               $returnContact = $cc->updateContact(Environment::getEnv('CONSTANT_CONTACT_ACCESS_TOKEN'), $contact, true);
             } else {
@@ -274,7 +252,7 @@ class NewsletterPageControllerExtender extends DataExtension
       && Environment::getEnv('ACTIVECAMPAIGN_API_KEY')
     ) {
       // Add this user to Active Campaign
-      $ac = new \ActiveCampaign(Environment::getEnv('ACTIVECAMPAIGN_URL'), Environment::getEnv('ACTIVECAMPAIGN_API_KEY'));
+      $ac = new ActiveCampaign(Environment::getEnv('ACTIVECAMPAIGN_URL'), Environment::getEnv('ACTIVECAMPAIGN_API_KEY'));
       if ($ac->credentials_test()) {
         $contact = [
           "email" => $Email,
@@ -284,7 +262,7 @@ class NewsletterPageControllerExtender extends DataExtension
           "status[{$config->ActiveCampaignListID}]" => 1, // "Active" status
         ];
 
-        $this->owner->extend("updateActiveCampaignContactNewsletter", $contact);
+        $this->getOwner()->extend("updateActiveCampaignContactNewsletter", $contact);
 
         $contact_sync = $ac->api("contact/sync", $contact);
       }
@@ -321,13 +299,13 @@ class NewsletterPageControllerExtender extends DataExtension
     }
 
     //SAVE SUBMISSION NO MATTER WHAT API (or if none)
-    $submission = new NewsletterSubmission();
+    $submission = NewsletterSubmission::create();
     $submission->Email = $Email;
     $submission->FirstName = $FirstName;
     $submission->LastName = $LastName;
     $submission->write();
 
-    $this->owner->extend('onAfterInsertToNewsletter', $submission);
+    $this->getOwner()->extend('onAfterInsertToNewsletter', $submission);
 
     return $status;
   }

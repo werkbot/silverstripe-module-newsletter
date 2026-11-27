@@ -14,7 +14,8 @@ composer require werkbot/newsletter-module
 ```
 
 #### Requirements
-- Silverstripe ^4.0
+- Silverstripe CMS ^5.0 or ^6.0
+- PHP ^8.2 (Silverstripe CMS 6 requires PHP ^8.3)
 
 ## Setup
 - You will need to run `/dev/build`

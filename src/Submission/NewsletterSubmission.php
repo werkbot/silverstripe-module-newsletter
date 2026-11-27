@@ -34,12 +34,7 @@ class NewsletterSubmission extends DataObject
 
   public function getCMSFields()
   {
-    $fields = new FieldList(
-      ReadOnlyField::create("Created", "Created Date"),
-      ReadOnlyField::create("Email", "Email"),
-      ReadOnlyField::create("FirstName", "First Name"),
-      ReadOnlyField::create("LastName", "Last Name")
-    );
+    $fields = FieldList::create(ReadOnlyField::create("Created", "Created Date"), ReadOnlyField::create("Email", "Email"), ReadOnlyField::create("FirstName", "First Name"), ReadOnlyField::create("LastName", "Last Name"));
 
     $this->extend('updateCMSFields', $fields);
 
